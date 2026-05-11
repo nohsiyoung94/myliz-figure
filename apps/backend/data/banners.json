@@ -1,0 +1,26 @@
+[
+  {
+    "id": 3,
+    "title": "정밀 3D 스캔\n기술로 만드는 디테일",
+    "subtitle": "산업용 3D 스캐너로 0.1mm 단위까지 완벽하게 재현합니다",
+    "image": "https://picsum.photos/seed/banner-fig3/1600/900",
+    "href": "#brand",
+    "order": 0
+  },
+  {
+    "id": 5,
+    "title": "1,200+개의\n완성 작품",
+    "subtitle": "재주문율 98%, 고객 평점 4.9★ — 품질로 증명합니다",
+    "image": "https://picsum.photos/seed/banner-fig5/1600/900",
+    "href": "#gallery",
+    "order": 1
+  },
+  {
+    "id": 1778505065660,
+    "title": "ㅁㄴㅇㅁㄴㅇㅁㄴㅇㅁㄴㅇㅁㄴㅇㅁㄴㅇㅁㄴㅇ",
+    "subtitle": "ㅁㄴㅇㅁㄴㅇㅁ",
+    "image": "/uploads/1778505063758-aux86bwgbch.jpeg",
+    "href": "",
+    "order": 2
+  }
+]

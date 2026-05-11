@@ -1,0 +1,13 @@
+FROM node:20-alpine
+
+WORKDIR /app
+COPY package.json package-lock.json ./
+COPY apps/backend/package.json ./apps/backend/
+RUN npm ci --workspace=@brand/backend --include-workspace-root
+
+COPY apps/backend/ ./apps/backend/
+
+WORKDIR /app/apps/backend
+ENV PORT=4000
+
+CMD ["npm", "run", "dev"]
