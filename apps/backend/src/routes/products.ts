@@ -1,91 +1,82 @@
 import { Router, Request, Response } from "express";
-import fs from "fs";
-import path from "path";
+import pool from "../db";
 
 const router = Router();
-const DATA_FILE = path.join(__dirname, "../../data/products.json");
 
-interface Product {
-  id: number;
-  name: string;
-  desc: string;
-  price: string;
-  category: string;
-  image: string;
-  badge: string;
-  badgeColor: string;
-  rating: number;
-  reviews: number;
-  order: number;
-}
+const mapProduct = (row: Record<string, unknown>) => {
+  const { badge_color, ...rest } = row;
+  return { ...rest, badgeColor: badge_color };
+};
 
-function read(): Product[] {
+router.get("/", async (_req: Request, res: Response) => {
   try {
-    const dir = path.dirname(DATA_FILE);
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    if (!fs.existsSync(DATA_FILE)) { fs.writeFileSync(DATA_FILE, "[]"); return []; }
-    return JSON.parse(fs.readFileSync(DATA_FILE, "utf-8"));
-  } catch { return []; }
-}
-
-function write(items: Product[]): void {
-  const dir = path.dirname(DATA_FILE);
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(DATA_FILE, JSON.stringify(items, null, 2));
-}
-
-router.get("/", (_req: Request, res: Response) => {
-  res.json(read().sort((a, b) => a.order - b.order));
+    const { rows } = await pool.query('SELECT * FROM products ORDER BY "order"');
+    res.json(rows.map(mapProduct));
+  } catch { res.status(500).json({ error: "DB error" }); }
 });
 
-router.post("/", (req: Request, res: Response) => {
-  const items = read();
-  const item: Product = {
-    id: Date.now(),
-    name: req.body.name ?? "",
-    desc: req.body.desc ?? "",
-    price: req.body.price ?? "",
-    category: req.body.category ?? "figure",
-    image: req.body.image ?? "",
-    badge: req.body.badge ?? "",
-    badgeColor: req.body.badgeColor ?? "",
-    rating: Number(req.body.rating) || 0,
-    reviews: Number(req.body.reviews) || 0,
-    order: items.length,
-  };
-  items.push(item);
-  write(items);
-  res.status(201).json(item);
+router.post("/", async (req: Request, res: Response) => {
+  try {
+    const {
+      name = "", desc = "", price = "", category = "figure",
+      image = "", badge = "", badgeColor = "", rating = 0, reviews = 0,
+    } = req.body;
+    const { rows: [{ count }] } = await pool.query("SELECT COUNT(*) FROM products");
+    const { rows: [item] } = await pool.query(
+      `INSERT INTO products (name, "desc", price, category, image, badge, badge_color, rating, reviews, "order")
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *`,
+      [name, desc, price, category, image, badge, badgeColor, Number(rating), Number(reviews), Number(count)]
+    );
+    res.status(201).json(mapProduct(item));
+  } catch { res.status(500).json({ error: "DB error" }); }
 });
 
-router.put("/:id", (req: Request, res: Response) => {
-  const items = read();
-  const id = Number(req.params.id);
-  const idx = items.findIndex((i) => i.id === id);
-  if (idx === -1) { res.status(404).json({ error: "Not found" }); return; }
-  items[idx] = { ...items[idx], ...req.body, id };
-  write(items);
-  res.json(items[idx]);
+router.put("/:id", async (req: Request, res: Response) => {
+  try {
+    const { name, desc, price, category, image, badge, badgeColor, rating, reviews } = req.body;
+    const { rows: [item] } = await pool.query(
+      `UPDATE products SET
+        name = COALESCE($1, name),
+        "desc" = COALESCE($2, "desc"),
+        price = COALESCE($3, price),
+        category = COALESCE($4, category),
+        image = COALESCE($5, image),
+        badge = COALESCE($6, badge),
+        badge_color = COALESCE($7, badge_color),
+        rating = COALESCE($8, rating),
+        reviews = COALESCE($9, reviews)
+      WHERE id = $10 RETURNING *`,
+      [name, desc, price, category, image, badge, badgeColor, rating, reviews, Number(req.params.id)]
+    );
+    if (!item) { res.status(404).json({ error: "Not found" }); return; }
+    res.json(mapProduct(item));
+  } catch { res.status(500).json({ error: "DB error" }); }
 });
 
-router.delete("/:id", (req: Request, res: Response) => {
-  let items = read();
-  items = items.filter((i) => i.id !== Number(req.params.id));
-  items.forEach((item, i) => { item.order = i; });
-  write(items);
-  res.json({ success: true });
+router.delete("/:id", async (req: Request, res: Response) => {
+  try {
+    await pool.query("DELETE FROM products WHERE id = $1", [Number(req.params.id)]);
+    res.json({ success: true });
+  } catch { res.status(500).json({ error: "DB error" }); }
 });
 
-router.patch("/reorder", (req: Request, res: Response) => {
+router.patch("/reorder", async (req: Request, res: Response) => {
   const { ids }: { ids: number[] } = req.body;
-  const items = read();
-  const reordered = ids.map((id, i) => {
-    const item = items.find((it) => it.id === id);
-    if (!item) return null;
-    return { ...item, order: i };
-  }).filter(Boolean) as Product[];
-  write(reordered);
-  res.json(reordered);
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+    for (let i = 0; i < ids.length; i++) {
+      await client.query('UPDATE products SET "order" = $1 WHERE id = $2', [i, ids[i]]);
+    }
+    await client.query("COMMIT");
+    const { rows } = await client.query('SELECT * FROM products ORDER BY "order"');
+    res.json(rows.map(mapProduct));
+  } catch {
+    await client.query("ROLLBACK");
+    res.status(500).json({ error: "Reorder failed" });
+  } finally {
+    client.release();
+  }
 });
 
 export default router;

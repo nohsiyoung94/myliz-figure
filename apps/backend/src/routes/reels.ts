@@ -1,90 +1,69 @@
 import { Router, Request, Response } from "express";
-import fs from "fs";
-import path from "path";
+import pool from "../db";
 
 const router = Router();
-const DATA_FILE = path.join(__dirname, "../../data/reels.json");
 
-interface Reel {
-  id: number;
-  title: string;
-  caption: string;
-  thumbnail: string;
-  video: string;
-  href: string;
-  order: number;
-}
-
-function readReels(): Reel[] {
+router.get("/", async (_req: Request, res: Response) => {
   try {
-    const dir = path.dirname(DATA_FILE);
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    if (!fs.existsSync(DATA_FILE)) {
-      fs.writeFileSync(DATA_FILE, "[]");
-      return [];
-    }
-    return JSON.parse(fs.readFileSync(DATA_FILE, "utf-8"));
-  } catch {
-    return [];
-  }
-}
-
-function writeReels(reels: Reel[]): void {
-  const dir = path.dirname(DATA_FILE);
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(DATA_FILE, JSON.stringify(reels, null, 2));
-}
-
-router.get("/", (_req: Request, res: Response) => {
-  const reels = readReels().sort((a, b) => a.order - b.order);
-  res.json(reels);
+    const { rows } = await pool.query('SELECT * FROM reels ORDER BY "order"');
+    res.json(rows);
+  } catch { res.status(500).json({ error: "DB error" }); }
 });
 
-router.post("/", (req: Request, res: Response) => {
-  const reels = readReels();
-  const reel: Reel = {
-    id: Date.now(),
-    title: req.body.title ?? "",
-    caption: req.body.caption ?? "",
-    thumbnail: req.body.thumbnail ?? "",
-    video: req.body.video ?? "",
-    href: req.body.href ?? "",
-    order: reels.length,
-  };
-  reels.push(reel);
-  writeReels(reels);
-  res.status(201).json(reel);
+router.post("/", async (req: Request, res: Response) => {
+  try {
+    const { title = "", caption = "", thumbnail = "", video = "", href = "" } = req.body;
+    const { rows: [{ count }] } = await pool.query("SELECT COUNT(*) FROM reels");
+    const { rows: [reel] } = await pool.query(
+      'INSERT INTO reels (title, caption, thumbnail, video, href, "order") VALUES ($1,$2,$3,$4,$5,$6) RETURNING *',
+      [title, caption, thumbnail, video, href, Number(count)]
+    );
+    res.status(201).json(reel);
+  } catch { res.status(500).json({ error: "DB error" }); }
 });
 
-router.put("/:id", (req: Request, res: Response) => {
-  const reels = readReels();
-  const id = Number(req.params.id);
-  const idx = reels.findIndex((r) => r.id === id);
-  if (idx === -1) { res.status(404).json({ error: "Not found" }); return; }
-  reels[idx] = { ...reels[idx], ...req.body, id };
-  writeReels(reels);
-  res.json(reels[idx]);
+router.put("/:id", async (req: Request, res: Response) => {
+  try {
+    const { title, caption, thumbnail, video, href } = req.body;
+    const { rows: [reel] } = await pool.query(
+      `UPDATE reels SET
+        title = COALESCE($1, title),
+        caption = COALESCE($2, caption),
+        thumbnail = COALESCE($3, thumbnail),
+        video = COALESCE($4, video),
+        href = COALESCE($5, href)
+      WHERE id = $6 RETURNING *`,
+      [title, caption, thumbnail, video, href, Number(req.params.id)]
+    );
+    if (!reel) { res.status(404).json({ error: "Not found" }); return; }
+    res.json(reel);
+  } catch { res.status(500).json({ error: "DB error" }); }
 });
 
-router.delete("/:id", (req: Request, res: Response) => {
-  let reels = readReels();
-  const id = Number(req.params.id);
-  reels = reels.filter((r) => r.id !== id);
-  reels.forEach((r, i) => { r.order = i; });
-  writeReels(reels);
-  res.json({ success: true });
+router.delete("/:id", async (req: Request, res: Response) => {
+  try {
+    await pool.query("DELETE FROM reels WHERE id = $1", [Number(req.params.id)]);
+    res.json({ success: true });
+  } catch { res.status(500).json({ error: "DB error" }); }
 });
 
-router.patch("/reorder", (req: Request, res: Response) => {
+router.patch("/reorder", async (req: Request, res: Response) => {
   const { ids }: { ids: number[] } = req.body;
-  const reels = readReels();
-  const reordered = ids.map((id, i) => {
-    const reel = reels.find((r) => r.id === id);
-    if (!reel) return null;
-    return { ...reel, order: i };
-  }).filter(Boolean) as Reel[];
-  writeReels(reordered);
-  res.json(reordered);
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+    for (let i = 0; i < ids.length; i++) {
+      await client.query('UPDATE reels SET "order" = $1 WHERE id = $2', [i, ids[i]]);
+    }
+    await client.query("COMMIT");
+    const { rows } = await client.query('SELECT * FROM reels ORDER BY "order"');
+    res.json(rows);
+  } catch {
+    await client.query("ROLLBACK");
+    res.status(500).json({ error: "Reorder failed" });
+  } finally {
+    client.release();
+  }
 });
 
 export default router;

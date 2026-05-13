@@ -71,7 +71,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
         {/* Footer */}
         <div className="px-6 py-4 border-t border-white/5 space-y-2">
           <a
-            href="http://localhost:3002"
+            href={process.env.NEXT_PUBLIC_FRONTEND_URL ?? "http://localhost:3002"}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 text-xs text-white/25 hover:text-white/50 transition-colors"

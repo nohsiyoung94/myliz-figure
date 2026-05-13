@@ -1,5 +1,6 @@
 import express, { Request, Response, NextFunction } from "express";
 import path from "path";
+import { initDB } from "./db";
 import authRouter from "./routes/auth";
 import reelsRouter from "./routes/reels";
 import bannersRouter from "./routes/banners";
@@ -33,6 +34,13 @@ app.use("/api/banners", bannersRouter);
 app.use("/api/gallery", galleryRouter);
 app.use("/api/products", productsRouter);
 
-app.listen(PORT, () => {
-  console.log(`Backend server running on http://localhost:${PORT}`);
-});
+initDB()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Backend server running on http://localhost:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("DB init failed:", err);
+    process.exit(1);
+  });

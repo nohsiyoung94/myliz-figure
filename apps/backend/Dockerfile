@@ -21,7 +21,10 @@ RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nodeuser
 
 COPY --from=builder --chown=nodeuser:nodejs /app/apps/backend/dist ./dist
+COPY --from=builder --chown=nodeuser:nodejs /app/apps/backend/data ./data
 COPY --from=builder /app/node_modules ./node_modules
+
+RUN mkdir -p uploads && chown nodeuser:nodejs uploads
 
 USER nodeuser
 EXPOSE 4000
