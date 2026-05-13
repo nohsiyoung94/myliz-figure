@@ -44,6 +44,26 @@ export async function initDB() {
       href TEXT NOT NULL DEFAULT '',
       "order" INTEGER NOT NULL DEFAULT 0
     );
+    CREATE TABLE IF NOT EXISTS reviews (
+      id SERIAL PRIMARY KEY,
+      name TEXT NOT NULL DEFAULT '',
+      handle TEXT NOT NULL DEFAULT '',
+      avatar TEXT NOT NULL DEFAULT '',
+      rating INTEGER NOT NULL DEFAULT 5,
+      text TEXT NOT NULL DEFAULT '',
+      product TEXT NOT NULL DEFAULT '',
+      "order" INTEGER NOT NULL DEFAULT 0
+    );
+    CREATE TABLE IF NOT EXISTS contacts (
+      id SERIAL PRIMARY KEY,
+      name TEXT NOT NULL DEFAULT '',
+      email TEXT NOT NULL DEFAULT '',
+      type TEXT NOT NULL DEFAULT '',
+      size TEXT NOT NULL DEFAULT '',
+      message TEXT NOT NULL DEFAULT '',
+      read BOOLEAN NOT NULL DEFAULT false,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
   `);
 }
 

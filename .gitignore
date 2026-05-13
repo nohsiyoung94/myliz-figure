@@ -33,3 +33,7 @@ next-env.d.ts
 # uploads (업로드된 파일은 git에서 제외)
 apps/backend/uploads/*
 !apps/backend/uploads/.gitkeep
+
+# SSL 인증서 (보안)
+certbot/conf/
+certbot/www/

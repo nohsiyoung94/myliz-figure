@@ -3,11 +3,15 @@ FROM node:20-alpine AS base
 FROM base AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
+COPY apps/admin/package.json ./apps/admin/
 COPY apps/frontend/package.json ./apps/frontend/
-RUN npm ci --workspace=@brand/frontend --include-workspace-root
+COPY apps/backend/package.json ./apps/backend/
+RUN npm ci
 
 FROM base AS builder
 WORKDIR /app
+ARG NEXT_PUBLIC_API_URL=http://localhost:4001
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 COPY package.json package-lock.json ./
 COPY --from=deps /app/node_modules ./node_modules
 COPY apps/frontend/ ./apps/frontend/

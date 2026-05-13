@@ -1,4 +1,39 @@
 services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=branddb
+      - POSTGRES_USER=branduser
+      - POSTGRES_PASSWORD=brandpass
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U branduser -d branddb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile.dev
+    ports:
+      - "4001:4000"
+    volumes:
+      - ./apps/backend/src:/app/apps/backend/src
+      - ./apps/backend/uploads:/app/apps/backend/uploads
+    environment:
+      - NODE_ENV=development
+      - PORT=4000
+      - ADMIN_PASSWORD=myreez2024
+      - DATABASE_URL=postgresql://branduser:brandpass@db:5432/branddb?sslmode=disable
+    depends_on:
+      db:
+        condition: service_healthy
+
   frontend:
     build:
       context: .
@@ -25,17 +60,5 @@ services:
       - NODE_ENV=development
       - NEXT_PUBLIC_API_URL=http://localhost:4001
 
-  backend:
-    build:
-      context: .
-      dockerfile: apps/backend/Dockerfile.dev
-    ports:
-      - "4001:4000"
-    volumes:
-      - ./apps/backend/src:/app/apps/backend/src
-      - ./apps/backend/data:/app/apps/backend/data
-      - ./apps/backend/uploads:/app/apps/backend/uploads
-    environment:
-      - NODE_ENV=development
-      - PORT=4000
-      - ADMIN_PASSWORD=myreez2024
+volumes:
+  postgres_dev_data:

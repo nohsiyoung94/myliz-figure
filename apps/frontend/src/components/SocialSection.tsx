@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Heart, MessageCircle, Star } from "lucide-react";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4001";
+
 function IconInstagram({ size = 24 }: { size?: number }) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" width={size} height={size}>
@@ -20,36 +22,33 @@ const posts = [
   { seed: "fig-sns6", likes: "1.5k", comments: "44", caption: "출력 완료, 이제 도색 시작!" },
 ];
 
-const reviews = [
-  {
-    name: "이지현",
-    handle: "@jihyun_fig",
-    avatar: "https://picsum.photos/seed/fav1/80/80",
-    rating: 5,
-    text: "결혼 1주년 선물로 웨딩 피규어를 주문했는데 남편이 감동받아서 울었어요. 사진으로 봤을 때보다 실물이 훨씬 퀄리티가 좋습니다.",
-    product: "웨딩 커플 피규어",
-  },
-  {
-    name: "박준호",
-    handle: "@junho_collector",
-    avatar: "https://picsum.photos/seed/fav2/80/80",
-    rating: 5,
-    text: "피규어 마니아인데 이 퀄리티는 진짜 놀랍습니다. 3D 스캔 기반이라 얼굴 디테일이 다른 업체랑 비교가 안 돼요. 재주문 확정.",
-    product: "커스텀 풀바디 피규어",
-  },
-  {
-    name: "김수아",
-    handle: "@shua_gifts",
-    avatar: "https://picsum.photos/seed/fav3/80/80",
-    rating: 5,
-    text: "부모님 환갑 선물로 두 분 피규어를 만들었는데 너무 좋아하셨어요. 배송도 빠르고 포장도 정말 꼼꼼합니다!",
-    product: "커플 피규어",
-  },
-];
+interface Review {
+  id: number;
+  name: string;
+  handle: string;
+  avatar: string;
+  rating: number;
+  text: string;
+  product: string;
+  order: number;
+}
 
 export default function SocialSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState(false);
+  const [reviews, setReviews] = useState<Review[]>([]);
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/reviews`)
+      .then((r) => r.json())
+      .then((data: Review[]) => {
+        setReviews(data.map((r) => ({
+          ...r,
+          avatar: r.avatar?.startsWith("/uploads/") ? `${API_URL}${r.avatar}` : (r.avatar ?? ""),
+        })));
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -113,56 +112,62 @@ export default function SocialSection() {
         </div>
 
         {/* Reviews */}
-        <div className={`transition-all duration-1000 delay-400 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
-          <div className="text-center mb-12">
-            <p className="text-rose-500 text-sm font-semibold tracking-[0.3em] uppercase mb-4">
-              Reviews
-            </p>
-            <h3 className="text-3xl lg:text-4xl font-black text-slate-800">
-              고객들의 <span className="text-gradient">진짜 후기</span>
-            </h3>
-          </div>
+        {reviews.length > 0 && (
+          <div className={`transition-all duration-1000 delay-400 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
+            <div className="text-center mb-12">
+              <p className="text-rose-500 text-sm font-semibold tracking-[0.3em] uppercase mb-4">Reviews</p>
+              <h3 className="text-3xl lg:text-4xl font-black text-slate-800">
+                고객들의 <span className="text-gradient">진짜 후기</span>
+              </h3>
+            </div>
 
-          <div className="grid md:grid-cols-3 gap-5">
-            {reviews.map((review, i) => (
-              <div
-                key={review.name}
-                className={`bg-rose-50 border border-rose-100 rounded-2xl p-6 hover:bg-white hover:shadow-lg hover:shadow-rose-100 transition-all duration-500 ${
-                  visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-                }`}
-                style={{ transitionDelay: `${(i + 4) * 100}ms` }}
-              >
-                {/* Stars */}
-                <div className="flex gap-1 mb-4">
-                  {Array.from({ length: review.rating }).map((_, j) => (
-                    <Star key={j} size={14} className="text-amber-400 fill-amber-400" />
-                  ))}
-                </div>
+            <div className="grid md:grid-cols-3 gap-5">
+              {reviews.map((review, i) => (
+                <div
+                  key={review.id}
+                  className={`bg-rose-50 border border-rose-100 rounded-2xl p-6 hover:bg-white hover:shadow-lg hover:shadow-rose-100 transition-all duration-500 ${
+                    visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+                  }`}
+                  style={{ transitionDelay: `${(i + 4) * 100}ms` }}
+                >
+                  <div className="flex gap-1 mb-4">
+                    {Array.from({ length: Math.min(review.rating, 5) }).map((_, j) => (
+                      <Star key={j} size={14} className="text-amber-400 fill-amber-400" />
+                    ))}
+                  </div>
 
-                {/* Product tag */}
-                <div className="inline-flex items-center gap-1.5 mb-3 px-3 py-1 rounded-full bg-rose-100 border border-rose-200">
-                  <span className="text-rose-500 text-xs font-semibold">{review.product}</span>
-                </div>
+                  {review.product && (
+                    <div className="inline-flex items-center gap-1.5 mb-3 px-3 py-1 rounded-full bg-rose-100 border border-rose-200">
+                      <span className="text-rose-500 text-xs font-semibold">{review.product}</span>
+                    </div>
+                  )}
 
-                <p className="text-slate-600 leading-relaxed mb-6 text-sm">
-                  &ldquo;{review.text}&rdquo;
-                </p>
+                  <p className="text-slate-600 leading-relaxed mb-6 text-sm">
+                    &ldquo;{review.text}&rdquo;
+                  </p>
 
-                <div className="flex items-center gap-3 pt-4 border-t border-rose-100">
-                  <img
-                    src={review.avatar}
-                    alt={review.name}
-                    className="w-10 h-10 rounded-full object-cover border border-rose-200"
-                  />
-                  <div>
-                    <p className="font-semibold text-slate-800 text-sm">{review.name}</p>
-                    <p className="text-slate-400 text-xs">{review.handle}</p>
+                  <div className="flex items-center gap-3 pt-4 border-t border-rose-100">
+                    {review.avatar ? (
+                      <img
+                        src={review.avatar}
+                        alt={review.name}
+                        className="w-10 h-10 rounded-full object-cover border border-rose-200"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-rose-100 border border-rose-200 flex items-center justify-center text-rose-400 font-bold text-sm shrink-0">
+                        {review.name[0]}
+                      </div>
+                    )}
+                    <div>
+                      <p className="font-semibold text-slate-800 text-sm">{review.name}</p>
+                      {review.handle && <p className="text-slate-400 text-xs">{review.handle}</p>}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );

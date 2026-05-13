@@ -3,8 +3,10 @@ FROM node:20-alpine AS base
 FROM base AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
+COPY apps/admin/package.json ./apps/admin/
+COPY apps/frontend/package.json ./apps/frontend/
 COPY apps/backend/package.json ./apps/backend/
-RUN npm ci --workspace=@brand/backend --include-workspace-root
+RUN npm ci
 
 FROM base AS builder
 WORKDIR /app

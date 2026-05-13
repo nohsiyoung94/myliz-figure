@@ -36,15 +36,16 @@
 ### 프론트엔드 (`apps/frontend`)
 | 항목 | 버전/설명 |
 |------|-----------|
-| Next.js | 15 (App Router, Turbopack) |
+| Next.js | 16.2.6 (App Router) |
 | React | 19 |
 | Tailwind CSS | v4 |
 | TypeScript | 5 |
+| lucide-react | 아이콘 |
 
 ### 관리자 (`apps/admin`)
 | 항목 | 버전/설명 |
 |------|-----------|
-| Next.js | 15 (App Router, Turbopack) |
+| Next.js | 16.2.6 (App Router) |
 | React | 19 |
 | Tailwind CSS | v4 |
 | TypeScript | 5 |
@@ -56,25 +57,37 @@
 | Node.js | 20 |
 | Express | 4 |
 | TypeScript | 5 |
-| tsx | TS 직접 실행 |
+| tsx | TS 직접 실행 (개발) |
+| pg (node-postgres) | PostgreSQL 클라이언트 |
 | multer | 파일 업로드 (이미지/동영상) |
-| 데이터 저장 | JSON 파일 (`apps/backend/data/`) |
 | 업로드 파일 | `apps/backend/uploads/` |
+
+### 데이터베이스
+| 항목 | 설명 |
+|------|------|
+| PostgreSQL | banners, products, gallery, reels 테이블 |
+| 연결 방식 | `DATABASE_URL` 환경변수 (raw SQL, ORM 없음) |
 
 ### 인프라
 | 항목 | 설명 |
 |------|------|
-| Docker Compose | 개발 환경 컨테이너 오케스트레이션 |
+| Docker Compose | 컨테이너 오케스트레이션 |
 | npm workspaces | 모노레포 패키지 관리 |
 
 ---
 
 ## 실행 방법
 
-### Docker (권장)
+### 개발 환경
 
 ```bash
 docker compose -f docker-compose.dev.yml up -d --build
+```
+
+### 프로덕션 환경
+
+```bash
+docker compose up -d --build
 ```
 
 ### 포트 정리
@@ -82,8 +95,20 @@ docker compose -f docker-compose.dev.yml up -d --build
 | 컨테이너 | 내부 포트 | 외부 포트 |
 |----------|-----------|-----------|
 | frontend | 3000 | 3002 |
-| admin | 3001 | 3003 → 3001 |
+| admin | 3001 | 3003 |
 | backend | 4000 | 4001 |
+| db (PostgreSQL) | 5432 | 5432 |
+
+### DB 접속 정보 (기본값)
+
+| 항목 | 값 |
+|------|----|
+| Host | `localhost:5432` |
+| Database | `branddb` |
+| User | `branduser` |
+| Password | `brandpass` |
+
+> 프로덕션 배포 시 `DATABASE_URL`, `POSTGRES_PASSWORD` 등을 반드시 변경하세요.
 
 ---
 
@@ -95,8 +120,8 @@ brand-homepage/
 │   ├── frontend/          # 홈페이지 (Next.js)
 │   ├── admin/             # 관리자 페이지 (Next.js)
 │   └── backend/           # API 서버 (Express)
-│       ├── data/          # JSON 데이터 파일
 │       └── uploads/       # 업로드된 파일
+├── docker-compose.yml
 ├── docker-compose.dev.yml
 └── package.json
 ```

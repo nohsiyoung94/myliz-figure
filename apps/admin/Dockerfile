@@ -4,10 +4,14 @@ FROM base AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
 COPY apps/admin/package.json ./apps/admin/
-RUN npm ci --workspace=@brand/admin --include-workspace-root
+COPY apps/frontend/package.json ./apps/frontend/
+COPY apps/backend/package.json ./apps/backend/
+RUN npm ci
 
 FROM base AS builder
 WORKDIR /app
+ARG NEXT_PUBLIC_API_URL=http://localhost:4001
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 COPY package.json package-lock.json ./
 COPY --from=deps /app/node_modules ./node_modules
 COPY apps/admin/ ./apps/admin/

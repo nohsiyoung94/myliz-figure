@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { MapPin, Phone, Mail, Clock, Send, CheckCircle } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, Send, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4001";
 
 export default function ContactSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", type: "", size: "", message: "" });
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -18,11 +20,21 @@ export default function ContactSection() {
     return () => observer.disconnect();
   }, []);
 
-  const handleSubmit = (e: React.SyntheticEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 4000);
-    setForm({ name: "", email: "", type: "", size: "", message: "" });
+    setStatus("loading");
+    try {
+      const res = await fetch(`${API_URL}/api/contact`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) throw new Error();
+      setStatus("success");
+      setForm({ name: "", email: "", type: "", size: "", message: "" });
+    } catch {
+      setStatus("error");
+    }
   };
 
   const info = [
@@ -96,13 +108,19 @@ export default function ContactSection() {
 
           {/* Form */}
           <div className={`transition-all duration-1000 delay-300 ${visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"}`}>
-            {submitted ? (
+            {status === "success" ? (
               <div className="flex flex-col items-center justify-center h-full gap-5 text-center py-20 bg-rose-50 border border-rose-100 rounded-3xl p-8">
                 <div className="w-16 h-16 rounded-full bg-gradient-to-br from-rose-400 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-rose-200">
                   <CheckCircle size={30} className="text-white" />
                 </div>
                 <h3 className="text-2xl font-black text-slate-800">문의 완료!</h3>
                 <p className="text-slate-500">24시간 내에 연락드리겠습니다.</p>
+                <button
+                  onClick={() => setStatus("idle")}
+                  className="text-rose-400 text-sm underline underline-offset-4 hover:text-rose-600 transition-colors"
+                >
+                  다시 문의하기
+                </button>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="bg-white border border-rose-100 rounded-3xl p-8 space-y-5 shadow-sm">
@@ -177,12 +195,22 @@ export default function ContactSection() {
                   />
                 </div>
 
+                {status === "error" && (
+                  <div className="flex items-center gap-2 text-red-500 text-sm bg-red-50 border border-red-100 rounded-xl px-4 py-3">
+                    <AlertCircle size={15} className="shrink-0" />
+                    <span>전송에 실패했습니다. 잠시 후 다시 시도해주세요.</span>
+                  </div>
+                )}
                 <button
                   type="submit"
-                  className="btn-primary w-full flex items-center justify-center gap-2"
+                  disabled={status === "loading"}
+                  className="btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  <Send size={16} />
-                  <span>문의 보내기</span>
+                  {status === "loading" ? (
+                    <><Loader2 size={16} className="animate-spin" /><span>전송 중...</span></>
+                  ) : (
+                    <><Send size={16} /><span>문의 보내기</span></>
+                  )}
                 </button>
               </form>
             )}
