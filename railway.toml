@@ -1,7 +1,5 @@
 [build]
-builder = "NIXPACKS"
-buildCommand = "cd apps/backend && npm install && npm run build"
+dockerfilePath = "apps/backend/Dockerfile"
 
 [deploy]
-startCommand = "node apps/backend/dist/index.js"
 restartPolicyType = "on_failure"
