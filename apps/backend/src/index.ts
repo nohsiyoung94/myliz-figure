@@ -37,8 +37,8 @@ app.use("/api/reviews", reviewsRouter);
 
 initDB()
   .then(() => {
-    app.listen(PORT, () => {
-      console.log(`Backend server running on http://localhost:${PORT}`);
+    app.listen(Number(PORT), "0.0.0.0", () => {
+      console.log(`Backend server running on port ${PORT}`);
     });
   })
   .catch((err) => {
