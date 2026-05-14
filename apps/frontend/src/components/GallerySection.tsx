@@ -11,6 +11,7 @@ interface GalleryItem {
   order: number;
 }
 
+// ▼ 백엔드 API 주소 (배포 시 NEXT_PUBLIC_API_URL 환경변수로 변경)
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4001";
 
 const sizeClass = { tall: "row-span-2", wide: "col-span-2", square: "" };
@@ -23,6 +24,7 @@ export default function GallerySection() {
   const [lightbox, setLightbox] = useState<number | null>(null);
 
   useEffect(() => {
+    // ▼ GET /api/gallery — 갤러리 목록 가져오기
     fetch(`${API_URL}/api/gallery`)
       .then((r) => r.json())
       .then((data: GalleryItem[]) => {

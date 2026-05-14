@@ -1,8 +1,10 @@
+// /api/reviews
 import { Router, Request, Response } from "express";
 import pool from "../db";
 
 const router = Router();
 
+// GET /api/reviews — 리뷰 목록 조회 (order 순)
 router.get("/", async (_req: Request, res: Response) => {
   try {
     const { rows } = await pool.query('SELECT * FROM reviews ORDER BY "order"');
@@ -10,6 +12,7 @@ router.get("/", async (_req: Request, res: Response) => {
   } catch { res.status(500).json({ error: "DB error" }); }
 });
 
+// POST /api/reviews — 리뷰 추가
 router.post("/", async (req: Request, res: Response) => {
   try {
     const { name = "", handle = "", avatar = "", rating = 5, text = "", product = "" } = req.body;
@@ -23,6 +26,7 @@ router.post("/", async (req: Request, res: Response) => {
   } catch { res.status(500).json({ error: "DB error" }); }
 });
 
+// PUT /api/reviews/:id — 리뷰 수정
 router.put("/:id", async (req: Request, res: Response) => {
   try {
     const { name, handle, avatar, rating, text, product } = req.body;
@@ -42,6 +46,7 @@ router.put("/:id", async (req: Request, res: Response) => {
   } catch { res.status(500).json({ error: "DB error" }); }
 });
 
+// DELETE /api/reviews/:id — 리뷰 삭제
 router.delete("/:id", async (req: Request, res: Response) => {
   try {
     await pool.query("DELETE FROM reviews WHERE id = $1", [Number(req.params.id)]);
@@ -49,6 +54,7 @@ router.delete("/:id", async (req: Request, res: Response) => {
   } catch { res.status(500).json({ error: "DB error" }); }
 });
 
+// PATCH /api/reviews/reorder — 리뷰 순서 변경
 router.patch("/reorder", async (req: Request, res: Response) => {
   const { ids }: { ids: number[] } = req.body;
   const client = await pool.connect();

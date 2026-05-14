@@ -13,6 +13,7 @@ interface Reel {
   order: number;
 }
 
+// ▼ 백엔드 API 주소 (배포 시 NEXT_PUBLIC_API_URL 환경변수로 변경)
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4001";
 
 export default function ReelsSection() {
@@ -22,6 +23,7 @@ export default function ReelsSection() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // ▼ GET /api/reels — 릴스(영상) 목록 가져오기
     fetch(`${API_URL}/api/reels`)
       .then((r) => r.json())
       .then((data: Reel[]) => {

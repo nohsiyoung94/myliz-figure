@@ -1,3 +1,4 @@
+// /api/products
 import { Router, Request, Response } from "express";
 import pool from "../db";
 
@@ -8,6 +9,7 @@ const mapProduct = (row: Record<string, unknown>) => {
   return { ...rest, badgeColor: badge_color };
 };
 
+// GET /api/products — 제품 목록 조회 (order 순)
 router.get("/", async (_req: Request, res: Response) => {
   try {
     const { rows } = await pool.query('SELECT * FROM products ORDER BY "order"');
@@ -15,6 +17,7 @@ router.get("/", async (_req: Request, res: Response) => {
   } catch { res.status(500).json({ error: "DB error" }); }
 });
 
+// POST /api/products — 제품 추가
 router.post("/", async (req: Request, res: Response) => {
   try {
     const {
@@ -31,6 +34,7 @@ router.post("/", async (req: Request, res: Response) => {
   } catch { res.status(500).json({ error: "DB error" }); }
 });
 
+// PUT /api/products/:id — 제품 수정
 router.put("/:id", async (req: Request, res: Response) => {
   try {
     const { name, desc, price, category, image, badge, badgeColor, rating, reviews } = req.body;
@@ -53,6 +57,7 @@ router.put("/:id", async (req: Request, res: Response) => {
   } catch { res.status(500).json({ error: "DB error" }); }
 });
 
+// DELETE /api/products/:id — 제품 삭제
 router.delete("/:id", async (req: Request, res: Response) => {
   try {
     await pool.query("DELETE FROM products WHERE id = $1", [Number(req.params.id)]);
@@ -60,6 +65,7 @@ router.delete("/:id", async (req: Request, res: Response) => {
   } catch { res.status(500).json({ error: "DB error" }); }
 });
 
+// PATCH /api/products/reorder — 제품 순서 변경
 router.patch("/reorder", async (req: Request, res: Response) => {
   const { ids }: { ids: number[] } = req.body;
   const client = await pool.connect();

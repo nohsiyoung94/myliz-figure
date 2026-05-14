@@ -17,6 +17,7 @@ interface Product {
   order: number;
 }
 
+// ▼ 백엔드 API 주소 (배포 시 NEXT_PUBLIC_API_URL 환경변수로 변경)
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4001";
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -31,6 +32,7 @@ export default function CollectionSection() {
   const [filter, setFilter] = useState("all");
 
   useEffect(() => {
+    // ▼ GET /api/products — 제품 목록 가져오기
     fetch(`${API_URL}/api/products`)
       .then((r) => r.json())
       .then((data: Product[]) => {

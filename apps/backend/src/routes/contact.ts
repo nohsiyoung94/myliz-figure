@@ -1,8 +1,10 @@
+// /api/contact
 import { Router, Request, Response } from "express";
 import pool from "../db";
 
 const router = Router();
 
+// GET /api/contact — 문의 목록 조회 (최신순)
 router.get("/", async (_req: Request, res: Response) => {
   try {
     const { rows } = await pool.query("SELECT * FROM contacts ORDER BY created_at DESC");
@@ -10,6 +12,7 @@ router.get("/", async (_req: Request, res: Response) => {
   } catch { res.status(500).json({ error: "DB error" }); }
 });
 
+// POST /api/contact — 문의 접수 (name, email, message 필수)
 router.post("/", async (req: Request, res: Response) => {
   try {
     const { name, email, type = "", size = "", message } = req.body;
@@ -26,6 +29,7 @@ router.post("/", async (req: Request, res: Response) => {
   } catch { res.status(500).json({ error: "DB error" }); }
 });
 
+// PATCH /api/contact/:id/read — 문의 읽음 처리
 router.patch("/:id/read", async (req: Request, res: Response) => {
   try {
     const { rows: [contact] } = await pool.query(
@@ -37,6 +41,7 @@ router.patch("/:id/read", async (req: Request, res: Response) => {
   } catch { res.status(500).json({ error: "DB error" }); }
 });
 
+// DELETE /api/contact/:id — 문의 삭제
 router.delete("/:id", async (req: Request, res: Response) => {
   try {
     await pool.query("DELETE FROM contacts WHERE id = $1", [Number(req.params.id)]);

@@ -12,6 +12,7 @@ interface Banner {
   order: number;
 }
 
+// ▼ 백엔드 API 주소 (배포 시 NEXT_PUBLIC_API_URL 환경변수로 변경)
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4001";
 
 const FALLBACK: Banner[] = [
@@ -31,6 +32,7 @@ export default function HeroSection() {
   const [animating, setAnimating] = useState(false);
 
   useEffect(() => {
+    // ▼ GET /api/banners — 배너 목록 가져오기
     fetch(`${API_URL}/api/banners`)
       .then((r) => r.json())
       .then((data: Banner[]) => {

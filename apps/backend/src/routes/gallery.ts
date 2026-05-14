@@ -1,8 +1,10 @@
+// /api/gallery
 import { Router, Request, Response } from "express";
 import pool from "../db";
 
 const router = Router();
 
+// GET /api/gallery — 갤러리 목록 조회 (order 순)
 router.get("/", async (_req: Request, res: Response) => {
   try {
     const { rows } = await pool.query('SELECT * FROM gallery ORDER BY "order"');
@@ -10,6 +12,7 @@ router.get("/", async (_req: Request, res: Response) => {
   } catch { res.status(500).json({ error: "DB error" }); }
 });
 
+// POST /api/gallery — 갤러리 이미지 추가
 router.post("/", async (req: Request, res: Response) => {
   try {
     const { title = "", image = "", size = "square" } = req.body;
@@ -22,6 +25,7 @@ router.post("/", async (req: Request, res: Response) => {
   } catch { res.status(500).json({ error: "DB error" }); }
 });
 
+// PUT /api/gallery/:id — 갤러리 이미지 수정
 router.put("/:id", async (req: Request, res: Response) => {
   try {
     const { title, image, size } = req.body;
@@ -38,6 +42,7 @@ router.put("/:id", async (req: Request, res: Response) => {
   } catch { res.status(500).json({ error: "DB error" }); }
 });
 
+// DELETE /api/gallery/:id — 갤러리 이미지 삭제
 router.delete("/:id", async (req: Request, res: Response) => {
   try {
     await pool.query("DELETE FROM gallery WHERE id = $1", [Number(req.params.id)]);
@@ -45,6 +50,7 @@ router.delete("/:id", async (req: Request, res: Response) => {
   } catch { res.status(500).json({ error: "DB error" }); }
 });
 
+// PATCH /api/gallery/reorder — 갤러리 순서 변경
 router.patch("/reorder", async (req: Request, res: Response) => {
   const { ids }: { ids: number[] } = req.body;
   const client = await pool.connect();
