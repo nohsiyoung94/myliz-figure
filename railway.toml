@@ -1,5 +1,5 @@
 [build]
-dockerfilePath = "apps/backend/Dockerfile"
+dockerfilePath = "Dockerfile.backend"
 
 [deploy]
 startCommand = "node dist/index.js"
