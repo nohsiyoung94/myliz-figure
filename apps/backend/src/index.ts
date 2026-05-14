@@ -1,5 +1,4 @@
 import express, { Request, Response, NextFunction } from "express";
-import path from "path";
 import { initDB } from "./db";
 import authRouter from "./routes/auth";
 import reelsRouter from "./routes/reels";
@@ -22,8 +21,6 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   if (req.method === "OPTIONS") { res.sendStatus(200); return; }
   next();
 });
-
-app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 app.get("/health", (_req, res) => {
   res.json({ status: "ok" });
