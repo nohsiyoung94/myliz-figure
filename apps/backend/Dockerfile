@@ -29,7 +29,5 @@ COPY --from=builder /app/node_modules ./node_modules
 RUN mkdir -p uploads && chown nodeuser:nodejs uploads
 
 USER nodeuser
-EXPOSE 4000
-ENV PORT=4000
 
 CMD ["node", "dist/index.js"]
