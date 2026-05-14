@@ -9,7 +9,7 @@ router.get("/", async (_req: Request, res: Response) => {
   try {
     const { rows } = await pool.query('SELECT * FROM reels ORDER BY "order"');
     res.json(rows);
-  } catch { res.status(500).json({ error: "DB error" }); }
+  } catch (err) { console.error("reels route error:", err); res.status(500).json({ error: "DB error" }); }
 });
 
 // POST /api/reels — 영상 후기 추가
@@ -22,7 +22,7 @@ router.post("/", async (req: Request, res: Response) => {
       [title, caption, thumbnail, video, href, Number(count)]
     );
     res.status(201).json(reel);
-  } catch { res.status(500).json({ error: "DB error" }); }
+  } catch (err) { console.error("reels route error:", err); res.status(500).json({ error: "DB error" }); }
 });
 
 // PUT /api/reels/:id — 영상 후기 수정
@@ -41,7 +41,7 @@ router.put("/:id", async (req: Request, res: Response) => {
     );
     if (!reel) { res.status(404).json({ error: "Not found" }); return; }
     res.json(reel);
-  } catch { res.status(500).json({ error: "DB error" }); }
+  } catch (err) { console.error("reels route error:", err); res.status(500).json({ error: "DB error" }); }
 });
 
 // DELETE /api/reels/:id — 영상 후기 삭제
@@ -49,7 +49,7 @@ router.delete("/:id", async (req: Request, res: Response) => {
   try {
     await pool.query("DELETE FROM reels WHERE id = $1", [Number(req.params.id)]);
     res.json({ success: true });
-  } catch { res.status(500).json({ error: "DB error" }); }
+  } catch (err) { console.error("reels route error:", err); res.status(500).json({ error: "DB error" }); }
 });
 
 // PATCH /api/reels/reorder — 영상 순서 변경
@@ -64,7 +64,8 @@ router.patch("/reorder", async (req: Request, res: Response) => {
     await client.query("COMMIT");
     const { rows } = await client.query('SELECT * FROM reels ORDER BY "order"');
     res.json(rows);
-  } catch {
+  } catch (err) {
+    console.error("reels reorder error:", err);
     await client.query("ROLLBACK");
     res.status(500).json({ error: "Reorder failed" });
   } finally {

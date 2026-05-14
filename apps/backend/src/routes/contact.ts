@@ -9,7 +9,7 @@ router.get("/", async (_req: Request, res: Response) => {
   try {
     const { rows } = await pool.query("SELECT * FROM contacts ORDER BY created_at DESC");
     res.json(rows);
-  } catch { res.status(500).json({ error: "DB error" }); }
+  } catch (err) { console.error("contact route error:", err); res.status(500).json({ error: "DB error" }); }
 });
 
 // POST /api/contact — 문의 접수 (name, email, message 필수)
@@ -26,7 +26,7 @@ router.post("/", async (req: Request, res: Response) => {
       [name, email, type, size, message]
     );
     res.status(201).json(contact);
-  } catch { res.status(500).json({ error: "DB error" }); }
+  } catch (err) { console.error("contact route error:", err); res.status(500).json({ error: "DB error" }); }
 });
 
 // PATCH /api/contact/:id/read — 문의 읽음 처리
@@ -38,7 +38,7 @@ router.patch("/:id/read", async (req: Request, res: Response) => {
     );
     if (!contact) { res.status(404).json({ error: "Not found" }); return; }
     res.json(contact);
-  } catch { res.status(500).json({ error: "DB error" }); }
+  } catch (err) { console.error("contact route error:", err); res.status(500).json({ error: "DB error" }); }
 });
 
 // DELETE /api/contact/:id — 문의 삭제
@@ -46,7 +46,7 @@ router.delete("/:id", async (req: Request, res: Response) => {
   try {
     await pool.query("DELETE FROM contacts WHERE id = $1", [Number(req.params.id)]);
     res.json({ success: true });
-  } catch { res.status(500).json({ error: "DB error" }); }
+  } catch (err) { console.error("contact route error:", err); res.status(500).json({ error: "DB error" }); }
 });
 
 export default router;

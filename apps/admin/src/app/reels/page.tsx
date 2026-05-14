@@ -5,7 +5,7 @@ import { Plus, Pencil, Trash2, GripVertical, X, Save, ExternalLink, AlertTriangl
 import ImageUpload from "@/components/ImageUpload";
 import VideoUpload from "@/components/VideoUpload";
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4001";
+const API = process.env.NEXT_PUBLIC_API_URL ?? "";
 
 function normalize(url: string) {
   if (!url) return "";

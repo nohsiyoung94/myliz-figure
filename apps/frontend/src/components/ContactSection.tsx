@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { MapPin, Phone, Mail, Clock, Send, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 
 // ▼ 백엔드 API 주소 (배포 시 NEXT_PUBLIC_API_URL 환경변수로 변경)
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4001";
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
 
 export default function ContactSection() {
   const sectionRef = useRef<HTMLElement>(null);

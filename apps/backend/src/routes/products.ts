@@ -14,7 +14,7 @@ router.get("/", async (_req: Request, res: Response) => {
   try {
     const { rows } = await pool.query('SELECT * FROM products ORDER BY "order"');
     res.json(rows.map(mapProduct));
-  } catch { res.status(500).json({ error: "DB error" }); }
+  } catch (err) { console.error("products route error:", err); res.status(500).json({ error: "DB error" }); }
 });
 
 // POST /api/products — 제품 추가
@@ -31,7 +31,7 @@ router.post("/", async (req: Request, res: Response) => {
       [name, desc, price, category, image, badge, badgeColor, Number(rating), Number(reviews), Number(count)]
     );
     res.status(201).json(mapProduct(item));
-  } catch { res.status(500).json({ error: "DB error" }); }
+  } catch (err) { console.error("products route error:", err); res.status(500).json({ error: "DB error" }); }
 });
 
 // PUT /api/products/:id — 제품 수정
@@ -54,7 +54,7 @@ router.put("/:id", async (req: Request, res: Response) => {
     );
     if (!item) { res.status(404).json({ error: "Not found" }); return; }
     res.json(mapProduct(item));
-  } catch { res.status(500).json({ error: "DB error" }); }
+  } catch (err) { console.error("products route error:", err); res.status(500).json({ error: "DB error" }); }
 });
 
 // DELETE /api/products/:id — 제품 삭제
@@ -62,7 +62,7 @@ router.delete("/:id", async (req: Request, res: Response) => {
   try {
     await pool.query("DELETE FROM products WHERE id = $1", [Number(req.params.id)]);
     res.json({ success: true });
-  } catch { res.status(500).json({ error: "DB error" }); }
+  } catch (err) { console.error("products route error:", err); res.status(500).json({ error: "DB error" }); }
 });
 
 // PATCH /api/products/reorder — 제품 순서 변경
@@ -77,7 +77,8 @@ router.patch("/reorder", async (req: Request, res: Response) => {
     await client.query("COMMIT");
     const { rows } = await client.query('SELECT * FROM products ORDER BY "order"');
     res.json(rows.map(mapProduct));
-  } catch {
+  } catch (err) {
+    console.error("products reorder error:", err);
     await client.query("ROLLBACK");
     res.status(500).json({ error: "Reorder failed" });
   } finally {

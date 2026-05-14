@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4001";
+const API = process.env.NEXT_PUBLIC_API_URL ?? "";
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();

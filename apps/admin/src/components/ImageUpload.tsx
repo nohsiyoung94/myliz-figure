@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { Upload, X, Link } from "lucide-react";
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4001";
+const API = process.env.NEXT_PUBLIC_API_URL ?? "";
 
 interface Props {
   value: string;

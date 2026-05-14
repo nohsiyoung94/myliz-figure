@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Trash2, Mail, MailOpen, Clock, User, MessageSquare } from "lucide-react";
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4001";
+const API = process.env.NEXT_PUBLIC_API_URL ?? "";
 
 const TYPE_LABELS: Record<string, string> = {
   fullbody: "커스텀 풀바디 피규어",

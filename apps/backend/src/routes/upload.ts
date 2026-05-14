@@ -24,6 +24,12 @@ const upload = multer({
 router.post("/", upload.single("file"), async (req: Request, res: Response) => {
   if (!req.file) { res.status(400).json({ error: "파일이 없습니다." }); return; }
 
+  if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+    console.error("Cloudinary env vars missing");
+    res.status(500).json({ error: "서버 업로드 설정이 누락되었습니다. (CLOUDINARY_* 환경변수 확인)" });
+    return;
+  }
+
   const isVideo = req.file.mimetype.startsWith("video/");
   const buffer = req.file.buffer;
 
@@ -40,7 +46,9 @@ router.post("/", upload.single("file"), async (req: Request, res: Response) => {
     });
     res.json({ url: result.secure_url });
   } catch (err) {
-    res.status(500).json({ error: "업로드에 실패했습니다." });
+    console.error("Cloudinary upload error:", err);
+    const message = err instanceof Error ? err.message : "업로드에 실패했습니다.";
+    res.status(500).json({ error: message });
   }
 });
 

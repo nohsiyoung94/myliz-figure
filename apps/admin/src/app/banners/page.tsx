@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Plus, Pencil, Trash2, X, Save, ExternalLink, AlertTriangle, ChevronUp, ChevronDown, Image } from "lucide-react";
 import ImageUpload from "@/components/ImageUpload";
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4001";
+const API = process.env.NEXT_PUBLIC_API_URL ?? "";
 
 interface Banner {
   id: number;

@@ -9,7 +9,7 @@ router.get("/", async (_req: Request, res: Response) => {
   try {
     const { rows } = await pool.query('SELECT * FROM banners ORDER BY "order"');
     res.json(rows);
-  } catch { res.status(500).json({ error: "DB error" }); }
+  } catch (err) { console.error("banners route error:", err); res.status(500).json({ error: "DB error" }); }
 });
 
 // POST /api/banners — 배너 추가
@@ -22,7 +22,7 @@ router.post("/", async (req: Request, res: Response) => {
       [title, subtitle, image, href, Number(count)]
     );
     res.status(201).json(banner);
-  } catch { res.status(500).json({ error: "DB error" }); }
+  } catch (err) { console.error("banners route error:", err); res.status(500).json({ error: "DB error" }); }
 });
 
 // PUT /api/banners/:id — 배너 수정
@@ -40,7 +40,7 @@ router.put("/:id", async (req: Request, res: Response) => {
     );
     if (!banner) { res.status(404).json({ error: "Not found" }); return; }
     res.json(banner);
-  } catch { res.status(500).json({ error: "DB error" }); }
+  } catch (err) { console.error("banners route error:", err); res.status(500).json({ error: "DB error" }); }
 });
 
 // DELETE /api/banners/:id — 배너 삭제
@@ -48,7 +48,7 @@ router.delete("/:id", async (req: Request, res: Response) => {
   try {
     await pool.query("DELETE FROM banners WHERE id = $1", [Number(req.params.id)]);
     res.json({ success: true });
-  } catch { res.status(500).json({ error: "DB error" }); }
+  } catch (err) { console.error("banners route error:", err); res.status(500).json({ error: "DB error" }); }
 });
 
 // PATCH /api/banners/reorder — 배너 순서 변경
@@ -63,7 +63,8 @@ router.patch("/reorder", async (req: Request, res: Response) => {
     await client.query("COMMIT");
     const { rows } = await client.query('SELECT * FROM banners ORDER BY "order"');
     res.json(rows);
-  } catch {
+  } catch (err) {
+    console.error("banners reorder error:", err);
     await client.query("ROLLBACK");
     res.status(500).json({ error: "Reorder failed" });
   } finally {
