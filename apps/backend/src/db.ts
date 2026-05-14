@@ -5,6 +5,10 @@ const pool = new Pool({
   ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
 });
 
+pool.on("error", (err) => {
+  console.error("Database pool error:", err);
+});
+
 export async function initDB() {
   await pool.query(`
     CREATE TABLE IF NOT EXISTS banners (
