@@ -9,6 +9,15 @@ import uploadRouter from "./routes/upload";
 import contactRouter from "./routes/contact";
 import reviewsRouter from "./routes/reviews";
 
+process.on("uncaughtException", (err) => {
+  console.error("Uncaught exception:", err);
+  process.exit(1);
+});
+process.on("unhandledRejection", (reason) => {
+  console.error("Unhandled rejection:", reason);
+  process.exit(1);
+});
+
 const app = express();
 const PORT = process.env.PORT ?? 4000;
 
