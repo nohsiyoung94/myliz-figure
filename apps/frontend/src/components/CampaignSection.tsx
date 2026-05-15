@@ -45,7 +45,6 @@ const steps = [
 export default function CampaignSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState(false);
-  const [activeStep, setActiveStep] = useState(0);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -56,16 +55,11 @@ export default function CampaignSection() {
     return () => observer.disconnect();
   }, []);
 
-  useEffect(() => {
-    if (!visible) return;
-    const t = setInterval(() => setActiveStep((p) => (p + 1) % steps.length), 3000);
-    return () => clearInterval(t);
-  }, [visible]);
-
   return (
     <section id="process" ref={sectionRef} className="py-24 lg:py-32 bg-white relative overflow-hidden">
       <div className="absolute inset-0 grid-bg opacity-30" />
-      <div className="absolute top-1/2 left-0 w-[400px] h-[400px] rounded-full bg-fuchsia-200/15 blur-[100px] pointer-events-none" />
+      <div className="absolute top-1/3 left-0 w-[420px] h-[420px] rounded-full bg-rose-200/20 blur-[110px] pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-[420px] h-[420px] rounded-full bg-fuchsia-200/20 blur-[110px] pointer-events-none" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
         {/* Header */}
@@ -79,118 +73,88 @@ export default function CampaignSection() {
             <span className="text-gradient">4단계로 완성됩니다</span>
           </h2>
           <p className="text-slate-500 text-lg max-w-xl mx-auto">
-            상담부터 배송까지 평균 3~4주. 모든 단계에서 진행 상황을 실시간으로 공유해드립니다.
+            스캔부터 마감까지, 모든 공정이 한눈에 보이도록 정리했습니다.
           </p>
         </div>
 
-        {/* Steps */}
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
-          {/* Step list */}
-          <div className={`space-y-4 transition-all duration-1000 delay-200 ${visible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"}`}>
-            {steps.map((step, i) => {
-              const Icon = step.icon;
-              const isActive = activeStep === i;
-              const isRose = step.color === "rose";
-              return (
-                <button
-                  key={step.step}
-                  onClick={() => setActiveStep(i)}
-                  className={`w-full text-left rounded-2xl p-5 transition-all duration-500 ${
-                    isActive
-                      ? isRose
-                        ? "bg-white neon-border-cyan shadow-lg shadow-rose-100"
-                        : "bg-white neon-border-violet shadow-lg shadow-fuchsia-100"
-                      : "bg-white border border-rose-100 hover:border-rose-200"
-                  }`}
+        {/* Flow indicator (desktop only) */}
+        <div className={`hidden lg:flex items-center justify-between mb-8 px-4 transition-all duration-1000 delay-200 ${visible ? "opacity-100" : "opacity-0"}`}>
+          {steps.map((s, i) => {
+            const isRose = s.color === "rose";
+            return (
+              <div key={s.step} className="flex items-center flex-1 last:flex-none">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg bg-gradient-to-br ${isRose ? "from-rose-400 to-rose-500" : "from-fuchsia-400 to-fuchsia-600"}`}>
+                  {s.step}
+                </div>
+                {i < steps.length - 1 && (
+                  <div className="flex-1 h-0.5 mx-3 bg-gradient-to-r from-rose-200 via-fuchsia-200 to-rose-200 rounded-full" />
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Steps grid: 2x2 on desktop, 1 column on mobile */}
+        <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
+          {steps.map((step, i) => {
+            const Icon = step.icon;
+            const isRose = step.color === "rose";
+            return (
+              <div
+                key={step.step}
+                className={`relative bg-white rounded-3xl p-6 lg:p-8 ${isRose ? "neon-border-cyan shadow-lg shadow-rose-100" : "neon-border-violet shadow-lg shadow-fuchsia-100"} transition-all duration-700 hover:-translate-y-1 hover:shadow-xl ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+                style={{ transitionDelay: visible ? `${300 + i * 120}ms` : "0ms" }}
+              >
+                {/* Big step number watermark */}
+                <span
+                  className={`absolute top-4 right-6 text-7xl lg:text-8xl font-black leading-none select-none pointer-events-none ${isRose ? "text-rose-100" : "text-fuchsia-100"}`}
+                  aria-hidden
                 >
-                  <div className="flex items-start gap-4">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300 ${
-                      isActive
-                        ? `bg-gradient-to-br ${isRose ? "from-rose-400 to-rose-500" : "from-fuchsia-400 to-fuchsia-600"}`
-                        : "bg-rose-50"
-                    }`}>
-                      <Icon size={20} className={isActive ? "text-white" : "text-slate-400"} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-3 mb-1">
-                        <span className={`text-xs font-bold tracking-widest ${isActive ? (isRose ? "text-rose-500" : "text-fuchsia-500") : "text-slate-300"}`}>
-                          STEP {step.step}
-                        </span>
-                        <span className={`text-xs px-2 py-0.5 rounded-full ${isActive ? "bg-rose-100 text-rose-600" : "bg-slate-50 text-slate-300"}`}>
-                          {step.duration}
-                        </span>
-                      </div>
-                      <h3 className={`font-bold text-base mb-1 transition-colors ${isActive ? "text-slate-800" : "text-slate-400"}`}>
-                        {step.title}
-                      </h3>
-                      {isActive && (
-                        <p className="text-slate-500 text-sm leading-relaxed">{step.desc}</p>
-                      )}
-                    </div>
+                  {step.step}
+                </span>
+
+                {/* Header */}
+                <div className="relative flex items-center gap-4 mb-5">
+                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${isRose ? "from-rose-400 to-rose-500" : "from-fuchsia-400 to-fuchsia-600"} flex items-center justify-center shadow-lg shrink-0`}>
+                    <Icon size={26} className="text-white" />
                   </div>
-
-                  {/* Progress bar */}
-                  {isActive && (
-                    <div className="mt-4 h-px bg-rose-100 rounded-full overflow-hidden">
-                      <div
-                        className={`h-full rounded-full bg-gradient-to-r ${isRose ? "from-rose-400 to-rose-500" : "from-fuchsia-400 to-fuchsia-600"} transition-all duration-[3000ms]`}
-                        style={{ width: "100%" }}
-                      />
-                    </div>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Detail panel */}
-          <div className={`transition-all duration-1000 delay-400 ${visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"}`}>
-            {(() => {
-              const step = steps[activeStep];
-              const Icon = step.icon;
-              const isRose = step.color === "rose";
-              return (
-                <div className={`bg-white rounded-3xl p-8 ${isRose ? "neon-border-cyan shadow-xl shadow-rose-100" : "neon-border-violet shadow-xl shadow-fuchsia-100"} transition-all duration-500`}>
-                  {/* Header */}
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${isRose ? "from-rose-400 to-rose-500" : "from-fuchsia-400 to-fuchsia-600"} flex items-center justify-center shadow-lg`}>
-                      <Icon size={30} className="text-white" />
-                    </div>
-                    <div>
-                      <p className={`text-xs font-bold tracking-widest ${isRose ? "text-rose-500" : "text-fuchsia-500"}`}>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className={`text-[11px] font-bold tracking-[0.2em] ${isRose ? "text-rose-500" : "text-fuchsia-500"}`}>
                         STEP {step.step}
-                      </p>
-                      <h3 className="text-2xl font-black text-slate-800">{step.title}</h3>
+                      </span>
+                      <span className={`text-[11px] px-2 py-0.5 rounded-full ${isRose ? "bg-rose-50 text-rose-500" : "bg-fuchsia-50 text-fuchsia-500"}`}>
+                        {step.duration}
+                      </span>
                     </div>
-                  </div>
-
-                  <p className="text-slate-500 leading-relaxed mb-6">{step.desc}</p>
-
-                  {/* Checklist */}
-                  <div className="space-y-3">
-                    {step.detail.map((d) => (
-                      <div key={d} className="flex items-center gap-3">
-                        <div className={`w-5 h-5 rounded-full border ${isRose ? "border-rose-300 bg-rose-50" : "border-fuchsia-300 bg-fuchsia-50"} flex items-center justify-center shrink-0`}>
-                          <div className={`w-2 h-2 rounded-full ${isRose ? "bg-rose-400" : "bg-fuchsia-400"}`} />
-                        </div>
-                        <span className="text-slate-600 text-sm">{d}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Image */}
-                  <div className="mt-6 rounded-xl overflow-hidden aspect-video relative">
-                    <img
-                      src={`https://picsum.photos/seed/process-${activeStep + 1}/640/360`}
-                      alt={step.title}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-rose-100/30 to-transparent" />
+                    <h3 className="text-xl lg:text-2xl font-black text-slate-800 truncate">
+                      {step.title}
+                    </h3>
                   </div>
                 </div>
-              );
-            })()}
-          </div>
+
+                {/* Description */}
+                <p className="relative text-slate-500 text-sm lg:text-base leading-relaxed mb-5">
+                  {step.desc}
+                </p>
+
+                {/* Divider */}
+                <div className={`relative h-px mb-5 ${isRose ? "bg-rose-100" : "bg-fuchsia-100"}`} />
+
+                {/* Detail checklist */}
+                <div className="relative grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2.5">
+                  {step.detail.map((d) => (
+                    <div key={d} className="flex items-center gap-2.5">
+                      <div className={`w-5 h-5 rounded-full border ${isRose ? "border-rose-300 bg-rose-50" : "border-fuchsia-300 bg-fuchsia-50"} flex items-center justify-center shrink-0`}>
+                        <div className={`w-2 h-2 rounded-full ${isRose ? "bg-rose-400" : "bg-fuchsia-400"}`} />
+                      </div>
+                      <span className="text-slate-600 text-sm">{d}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
