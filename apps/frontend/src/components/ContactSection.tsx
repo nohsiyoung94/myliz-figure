@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { MapPin, Phone, Mail, Clock, Send, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, Send, CheckCircle, AlertCircle, Loader2, MessageCircle, Timer } from "lucide-react";
 
 // ▼ 백엔드 API 주소 (배포 시 NEXT_PUBLIC_API_URL 환경변수로 변경)
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
@@ -40,10 +40,18 @@ export default function ContactSection() {
   };
 
   const info = [
-    { icon: Phone, label: "전화 / 카카오", value: "02-1234-5678" },
-    { icon: Mail, label: "이메일", value: "order@마이리즈.co.kr" },
-    { icon: MapPin, label: "작업실 위치", value: "서울특별시 마포구 홍대입구역 인근" },
-    { icon: Clock, label: "운영시간", value: "월–금 10:00–18:00 (주말 예약 가능)" },
+    { icon: Phone, label: "전화", value: "(031) 894-5773" },
+    { icon: Mail, label: "이메일", value: "3dmyliz@naver.com" },
+    { icon: MapPin, label: "주소", value: "경기도 의정부시 오목로 205번길 21 골든플라자 123호" },
+    { icon: Clock, label: "영업시간", value: "11:00 – 19:00 (정기 휴무 없음)" },
+  ];
+
+  const productionTimes = [
+    { label: "피규어", value: "2주" },
+    { label: "아크릴 키링 · 스탠드", value: "3일" },
+    { label: "메탈 키링 · 뱃지 · 마그네틱", value: "즉석 제작" },
+    { label: "폰케이스", value: "30분" },
+    { label: "레이저 각인", value: "즉석 제작" },
   ];
 
   const inputClass = "w-full px-4 py-3 bg-white border border-rose-200 rounded-xl text-slate-800 placeholder-rose-300 focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all text-sm";
@@ -67,8 +75,9 @@ export default function ContactSection() {
 
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
           {/* Info */}
-          <div className={`transition-all duration-1000 delay-200 ${visible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"}`}>
-            <div className="bg-rose-50 border border-rose-100 rounded-3xl p-8 lg:p-10 h-full">
+          <div className={`space-y-6 transition-all duration-1000 delay-200 ${visible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"}`}>
+            {/* 연락처 정보 카드 */}
+            <div className="bg-rose-50 border border-rose-100 rounded-3xl p-8 lg:p-10">
               <h3 className="text-xl font-black text-slate-800 mb-8">연락처 정보</h3>
 
               <div className="space-y-5 mb-8">
@@ -79,16 +88,42 @@ export default function ContactSection() {
                       <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-400 to-fuchsia-500 flex items-center justify-center shrink-0 mt-0.5 shadow-sm shadow-rose-200">
                         <Icon size={16} className="text-white" />
                       </div>
-                      <div>
+                      <div className="min-w-0">
                         <p className="text-slate-400 text-xs mb-0.5">{item.label}</p>
-                        <p className="text-slate-800 font-medium text-sm">{item.value}</p>
+                        <p className="text-slate-800 font-medium text-sm break-keep">{item.value}</p>
                       </div>
                     </div>
                   );
                 })}
               </div>
 
-              <div className="pt-8 border-t border-rose-200">
+              {/* 카카오톡 채널 + QR */}
+              <div className="bg-white border border-rose-200 rounded-2xl p-5 mb-6">
+                <div className="flex items-center gap-4">
+                  <a
+                    href="https://pf.kakao.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-4 py-3 rounded-xl bg-[#FEE500] text-[#3C1E1E] font-bold text-sm shadow-sm hover:brightness-95 transition-all shrink-0"
+                  >
+                    <MessageCircle size={18} fill="#3C1E1E" />
+                    <span>카카오톡 상담</span>
+                  </a>
+                  <div className="flex items-center gap-3 min-w-0">
+                    <img
+                      src="/kakao-qr.png"
+                      alt="카카오톡 QR"
+                      className="w-16 h-16 rounded-lg border border-rose-200 object-cover bg-white"
+                      onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+                    />
+                    <p className="text-slate-400 text-xs leading-relaxed">
+                      QR을 스캔하면<br />바로 상담 가능합니다
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-6 border-t border-rose-200">
                 <p className="text-slate-500 text-sm leading-relaxed mb-4">
                   상담은 무료입니다. 부담 없이 문의주세요!
                   사진이나 참고 이미지를 함께 보내주시면 더욱 정확한 견적을 드릴 수 있어요.
@@ -96,7 +131,7 @@ export default function ContactSection() {
                 <div className="flex gap-3">
                   {[
                     { label: "견적 회신", value: "24시간 내" },
-                    { label: "제작 기간", value: "3~4주" },
+                    { label: "제작 기간", value: "30분 ~ 2주" },
                   ].map((t) => (
                     <div key={t.label} className="flex-1 bg-white border border-rose-200 rounded-xl p-3 text-center shadow-sm">
                       <p className="text-gradient font-black text-lg">{t.value}</p>
@@ -105,6 +140,27 @@ export default function ContactSection() {
                   ))}
                 </div>
               </div>
+            </div>
+
+            {/* 제작 기간 카드 */}
+            <div className="bg-white border border-rose-100 rounded-3xl p-8 shadow-sm">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-400 to-fuchsia-500 flex items-center justify-center shadow-sm shadow-rose-200">
+                  <Timer size={16} className="text-white" />
+                </div>
+                <h3 className="text-xl font-black text-slate-800">제작 기간</h3>
+              </div>
+              <ul className="space-y-3">
+                {productionTimes.map((p) => (
+                  <li key={p.label} className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <span className="w-1.5 h-1.5 rounded-full bg-rose-400 shrink-0" />
+                      <span className="text-slate-700 text-sm break-keep">{p.label}</span>
+                    </div>
+                    <span className="text-rose-500 font-bold text-sm shrink-0">{p.value}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
 
