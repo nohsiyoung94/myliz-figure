@@ -1,41 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ScanLine, Paintbrush, Leaf, Sparkles, Quote, Heart, Camera } from "lucide-react";
-
-const stats = [
-  { value: "1,200+", label: "완성 작품" },
-  { value: "98%", label: "재주문율" },
-  { value: "3~4주", label: "평균 제작 기간" },
-  { value: "4.9★", label: "평균 고객 평점" },
-];
-
-const values = [
-  {
-    icon: ScanLine,
-    title: "정밀 3D 스캔",
-    description: "산업용 3D 스캐너로 얼굴과 체형을 0.1mm 단위까지 정밀하게 측정합니다.",
-    color: "rose",
-  },
-  {
-    icon: Paintbrush,
-    title: "수작업 도색",
-    description: "숙련된 아티스트가 에어브러시와 붓으로 한 땀 한 땀 채색합니다.",
-    color: "fuchsia",
-  },
-  {
-    icon: Leaf,
-    title: "친환경 소재",
-    description: "무독성 FDA 인증 수지와 친환경 도료만을 사용해 안전하게 제작합니다.",
-    color: "rose",
-  },
-  {
-    icon: Sparkles,
-    title: "완전 맞춤 제작",
-    description: "헤어스타일, 의상, 포즈, 표정 모두 원하는 대로 100% 커스터마이징.",
-    color: "fuchsia",
-  },
-];
+import { ScanLine, Quote, Heart, Camera } from "lucide-react";
 
 export default function BrandSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -151,37 +117,6 @@ export default function BrandSection() {
           >
             무료 상담 신청
           </button>
-        </div>
-
-        {/* Stats */}
-        <div className={`grid grid-cols-2 lg:grid-cols-4 gap-4 mb-24 transition-all duration-1000 delay-400 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
-          {stats.map((s) => (
-            <div key={s.label} className="glass-card neon-border-cyan rounded-2xl p-6 text-center hover:bg-rose-50 transition-colors duration-300 shadow-sm">
-              <p className="text-3xl lg:text-4xl font-black text-gradient mb-2">{s.value}</p>
-              <p className="text-slate-400 text-sm">{s.label}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Values grid */}
-        <div className={`grid sm:grid-cols-2 lg:grid-cols-4 gap-4 transition-all duration-1000 delay-500 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
-          {values.map((v, i) => {
-            const Icon = v.icon;
-            const isRose = v.color === "rose";
-            return (
-              <div
-                key={v.title}
-                className={`glass-card ${isRose ? "neon-border-cyan hover:bg-rose-50" : "neon-border-violet hover:bg-fuchsia-50"} rounded-2xl p-6 transition-all duration-300 group shadow-sm`}
-                style={{ transitionDelay: `${i * 80}ms` }}
-              >
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${isRose ? "from-rose-400 to-rose-500" : "from-fuchsia-400 to-fuchsia-600"} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                  <Icon size={22} className="text-white" />
-                </div>
-                <h4 className="font-bold text-slate-800 mb-2">{v.title}</h4>
-                <p className="text-slate-500 text-sm leading-relaxed">{v.description}</p>
-              </div>
-            );
-          })}
         </div>
       </div>
     </section>
