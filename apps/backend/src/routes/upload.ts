@@ -47,8 +47,13 @@ router.post("/", upload.single("file"), async (req: Request, res: Response) => {
     res.json({ url: result.secure_url });
   } catch (err) {
     console.error("Cloudinary upload error:", err);
-    const message = err instanceof Error ? err.message : "업로드에 실패했습니다.";
-    res.status(500).json({ error: message });
+    const message =
+      err instanceof Error
+        ? err.message
+        : typeof err === "object" && err && "message" in err && typeof (err as { message: unknown }).message === "string"
+          ? (err as { message: string }).message
+          : JSON.stringify(err);
+    res.status(500).json({ error: `Cloudinary: ${message}` });
   }
 });
 
