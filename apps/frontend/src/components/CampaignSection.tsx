@@ -1,44 +1,44 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { MessageSquare, ScanLine, Printer, PackageCheck } from "lucide-react";
+import { ScanLine, Layers, Printer, Sparkles } from "lucide-react";
 
 const steps = [
   {
     step: "01",
-    icon: MessageSquare,
-    title: "상담 & 디자인",
-    desc: "원하는 포즈, 의상, 스타일을 상담합니다. 사진과 영상을 참고해 완벽한 컨셉을 잡아드립니다.",
-    detail: ["카카오 / 전화 상담", "레퍼런스 이미지 수집", "견적 및 일정 확정"],
+    icon: ScanLine,
+    title: "스캔",
+    desc: "최첨단 고성능 3D 스캐너로 빠르고 정밀하게 촬영합니다. 자연스러운 포즈 연출은 물론 의상과 소품까지 그대로 담아냅니다.",
+    detail: ["고성능 3D 스캐너 촬영", "빠르고 정밀한 데이터 수집", "자연스러운 포즈 연출", "의상 및 소품 표현 가능"],
     color: "rose",
-    duration: "1~2일",
+    duration: "당일 촬영",
   },
   {
     step: "02",
-    icon: ScanLine,
-    title: "3D 스캔 & 모델링",
-    desc: "산업용 3D 스캐너로 정밀하게 측정하고, 전문 아티스트가 디지털 조각 작업을 진행합니다.",
-    detail: ["정밀도 0.1mm 스캔", "ZBrush 디지털 조각", "고객 확인 및 수정"],
+    icon: Layers,
+    title: "3D 렌더링 · 보정",
+    desc: "스캔한 데이터를 기반으로 전문 프로그램을 활용해 3D 모델링과 디테일 보정을 진행합니다. 피부 표현, 의상 주름, 헤어스타일, 컬러 등을 다듬어 보다 자연스럽고 완성도 높은 피규어 데이터로 제작합니다.",
+    detail: ["얼굴 및 표정 디테일 수정", "색감 및 질감 보정", "출력용 데이터 최적화", "피규어 비율 및 안정성 조정"],
     color: "fuchsia",
     duration: "3~5일",
   },
   {
     step: "03",
     icon: Printer,
-    title: "프린팅 & 도색",
-    desc: "고해상도 레진 프린터로 출력 후, 숙련된 아티스트가 에어브러시로 정밀하게 채색합니다.",
-    detail: ["고해상도 레진 출력", "에어브러시 채색", "세부 수작업 마무리"],
+    title: "프린팅",
+    desc: "완성된 3D 데이터를 고해상도 3D 프린터로 출력합니다. 섬세한 표현이 가능한 장비를 사용하여 작은 디테일까지 정교하게 구현하며 실제 인물의 분위기를 최대한 살려 제작합니다.",
+    detail: ["고해상도 출력", "세밀한 컬러 표현", "다양한 사이즈 제작 가능", "안정감 있는 출력 구조 설계"],
     color: "rose",
-    duration: "7~10일",
+    duration: "5~7일",
   },
   {
     step: "04",
-    icon: PackageCheck,
-    title: "검수 & 배송",
-    desc: "완성된 피규어를 꼼꼼하게 검수하고, 파손 없이 안전하게 포장하여 배송해드립니다.",
-    detail: ["10항목 품질 검수", "전용 케이스 포장", "전국 택배 / 직접 수령"],
+    icon: Sparkles,
+    title: "마감",
+    desc: "출력된 피규어는 전문 후가공 과정을 거쳐 최종 완성됩니다. 서포트 제거, 표면 정리, 컬러 보정, 코팅 작업 등을 통해 더욱 자연스럽고 고급스러운 결과물을 완성합니다.",
+    detail: ["표면 정리 및 샌딩", "컬러 디테일 보정", "보호 코팅 작업", "최종 품질 검수"],
     color: "fuchsia",
-    duration: "1~2일",
+    duration: "2~3일",
   },
 ];
 
