@@ -16,8 +16,8 @@ export default function Home() {
       <HeroSection />
       <BrandSection />
       <CollectionSection />
-      <CampaignSection />
       <GallerySection />
+      <CampaignSection />
       <ReelsSection />
       <SocialSection />
       <ContactSection />

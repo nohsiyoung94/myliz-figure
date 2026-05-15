@@ -6,8 +6,8 @@ import { Menu, X, ShoppingBag, Search } from "lucide-react";
 const navLinks = [
   { label: "피규어", href: "#collection" },
   { label: "커스텀 굿즈", href: "#collection" },
-  { label: "제작 과정", href: "#process" },
   { label: "갤러리", href: "#gallery" },
+  { label: "제작 과정", href: "#process" },
   { label: "문의", href: "#contact" },
 ];
 
