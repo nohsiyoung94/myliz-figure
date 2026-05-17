@@ -142,26 +142,6 @@ export default function ContactSection() {
               </div>
             </div>
 
-            {/* 제작 기간 카드 */}
-            <div className="bg-white border border-rose-100 rounded-3xl p-16 shadow-sm">
-              <div className="flex items-center gap-5 mb-12">
-                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-rose-400 to-fuchsia-500 flex items-center justify-center shadow-md shadow-rose-200">
-                  <Timer size={32} className="text-white" />
-                </div>
-                <h3 className="text-3xl font-black text-slate-800">제작 기간</h3>
-              </div>
-              <ul className="space-y-6">
-                {productionTimes.map((p) => (
-                  <li key={p.label} className="flex items-center justify-between gap-6">
-                    <div className="flex items-center gap-4 min-w-0">
-                      <span className="w-2.5 h-2.5 rounded-full bg-rose-400 shrink-0" />
-                      <span className="text-slate-700 text-lg break-keep">{p.label}</span>
-                    </div>
-                    <span className="text-rose-500 font-bold text-lg shrink-0">{p.value}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
           </div>
 
           {/* Form */}
@@ -285,6 +265,26 @@ export default function ContactSection() {
                 </button>
               </form>
             )}
+          </div>
+        </div>
+
+        {/* 제작 기간 카드 (풀폭) */}
+        <div className={`mt-10 lg:mt-16 transition-all duration-1000 delay-400 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
+          <div className="bg-white border border-rose-100 rounded-3xl p-10 lg:p-12 shadow-sm">
+            <div className="flex items-center gap-5 mb-10">
+              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-rose-400 to-fuchsia-500 flex items-center justify-center shadow-md shadow-rose-200">
+                <Timer size={32} className="text-white" />
+              </div>
+              <h3 className="text-3xl font-black text-slate-800">제작 기간</h3>
+            </div>
+            <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+              {productionTimes.map((p) => (
+                <li key={p.label} className="flex flex-col items-center justify-center gap-3 bg-rose-50 border border-rose-100 rounded-2xl py-8 px-4 text-center">
+                  <span className="text-slate-600 text-sm break-keep">{p.label}</span>
+                  <span className="text-rose-500 font-black text-2xl">{p.value}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </div>
