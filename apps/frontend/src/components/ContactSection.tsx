@@ -268,9 +268,9 @@ export default function ContactSection() {
           </div>
         </div>
 
-        {/* 제작 기간 카드 (왼쪽 칸 폭) */}
+        {/* 제작 기간 카드 (오른쪽 칸, 문의 보내기 하단) */}
         <div className={`mt-10 lg:mt-16 grid lg:grid-cols-2 gap-10 lg:gap-16 transition-all duration-1000 delay-400 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
-          <div className="bg-white border border-rose-100 rounded-3xl p-8 shadow-sm">
+          <div className="lg:col-start-2 bg-white border border-rose-100 rounded-3xl p-8 shadow-sm">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-400 to-fuchsia-500 flex items-center justify-center shadow-sm shadow-rose-200">
                 <Timer size={16} className="text-white" />
