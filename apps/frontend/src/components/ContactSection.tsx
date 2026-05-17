@@ -143,21 +143,21 @@ export default function ContactSection() {
             </div>
 
             {/* 제작 기간 카드 */}
-            <div className="bg-white border border-rose-100 rounded-3xl p-8 shadow-sm">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-400 to-fuchsia-500 flex items-center justify-center shadow-sm shadow-rose-200">
-                  <Timer size={16} className="text-white" />
+            <div className="bg-white border border-rose-100 rounded-3xl p-16 shadow-sm">
+              <div className="flex items-center gap-5 mb-12">
+                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-rose-400 to-fuchsia-500 flex items-center justify-center shadow-md shadow-rose-200">
+                  <Timer size={32} className="text-white" />
                 </div>
-                <h3 className="text-xl font-black text-slate-800">제작 기간</h3>
+                <h3 className="text-3xl font-black text-slate-800">제작 기간</h3>
               </div>
-              <ul className="space-y-3">
+              <ul className="space-y-6">
                 {productionTimes.map((p) => (
-                  <li key={p.label} className="flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <span className="w-1.5 h-1.5 rounded-full bg-rose-400 shrink-0" />
-                      <span className="text-slate-700 text-sm break-keep">{p.label}</span>
+                  <li key={p.label} className="flex items-center justify-between gap-6">
+                    <div className="flex items-center gap-4 min-w-0">
+                      <span className="w-2.5 h-2.5 rounded-full bg-rose-400 shrink-0" />
+                      <span className="text-slate-700 text-lg break-keep">{p.label}</span>
                     </div>
-                    <span className="text-rose-500 font-bold text-sm shrink-0">{p.value}</span>
+                    <span className="text-rose-500 font-bold text-lg shrink-0">{p.value}</span>
                   </li>
                 ))}
               </ul>
