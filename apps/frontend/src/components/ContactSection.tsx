@@ -216,27 +216,40 @@ export default function ContactSection() {
                       className={inputClass}
                     >
                       <option value="" className="bg-white">선택해주세요</option>
-                      <option value="fullbody" className="bg-white">커스텀 풀바디 피규어</option>
+                      <option value="fullbody" className="bg-white">3D 피규어</option>
                       <option value="wedding" className="bg-white">웨딩 / 커플 피규어</option>
-                      <option value="bust" className="bg-white">반신 흉상 피규어</option>
-                      <option value="topper" className="bg-white">케이크 토퍼</option>
-                      <option value="keyring" className="bg-white">미니 키링</option>
-                      <option value="acrylic" className="bg-white">아크릴 굿즈</option>
-                      <option value="other" className="bg-white">기타</option>
+                      <option value="fullbody-photo" className="bg-white">전신 (사진 제작)</option>
+                      <option value="bust-photo" className="bg-white">흉상 (사진 제작)</option>
+                      <option value="phone-case" className="bg-white">커스텀 폰케이스</option>
+                      <option value="acrylic-keyring" className="bg-white">아크릴 키링</option>
+                      <option value="acrylic-stand" className="bg-white">아크릴 스탠드 (등신대)</option>
+                      <option value="metal-round-keyring" className="bg-white">메탈 원형 키링</option>
+                      <option value="metal-round-badge" className="bg-white">메탈 원형 뱃지</option>
+                      <option value="metal-round-magnet" className="bg-white">메탈 원형 마그넷</option>
+                      <option value="metal-square-magnet" className="bg-white">메탈 사각 마그넷</option>
+                      <option value="laser-engraving" className="bg-white">레이저 각인</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-2 tracking-wider uppercase">원하는 수량</label>
+                    <label className="block text-xs font-semibold text-slate-400 mb-2 tracking-wider uppercase">사이즈 / 옵션</label>
                     <select
                       value={form.size}
                       onChange={(e) => setForm({ ...form, size: e.target.value })}
                       className={inputClass}
                     >
-                      <option value="" className="bg-white">선택해주세요</option>
-                      <option value="1" className="bg-white">1개</option>
-                      <option value="2" className="bg-white">2개</option>
-                      <option value="3-5" className="bg-white">3~5개</option>
-                      <option value="6+" className="bg-white">6개 이상 (단체 할인)</option>
+                      <option value="" className="bg-white">사이즈 선택</option>
+                      <option value="9" className="bg-white">피규어 9cm</option>
+                      <option value="12" className="bg-white">피규어 12cm</option>
+                      <option value="15" className="bg-white">피규어 15cm</option>
+                      <option value="18" className="bg-white">피규어 18cm</option>
+                      <option value="20" className="bg-white">피규어 20cm</option>
+                      <option value="small" className="bg-white">아크릴 키링 (소)</option>
+                      <option value="medium" className="bg-white">아크릴 키링 (중)</option>
+                      <option value="large" className="bg-white">아크릴 키링 (대)</option>
+                      <option value="a-small" className="bg-white">아크릴 스탠드 (소)</option>
+                      <option value="a-medium" className="bg-white">아크릴 스탠드 (중)</option>
+                      <option value="a-large" className="bg-white">아크릴 스탠드 (대)</option>
+                      <option value="none" className="bg-white">선택사항 없음</option>
                     </select>
                   </div>
                 </div>
