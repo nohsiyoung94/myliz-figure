@@ -54,7 +54,7 @@ export default function ContactSection() {
     { label: "레이저 각인", value: "즉석 제작" },
   ];
 
-  const inputClass = "w-full px-4 py-3 bg-white border border-rose-200 rounded-xl text-slate-800 placeholder-rose-300 focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all text-sm";
+  const inputClass = "w-full px-5 py-5 bg-white border border-rose-200 rounded-xl text-slate-800 placeholder-rose-300 focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 transition-all text-base";
 
   return (
     <section id="contact" ref={sectionRef} className="py-24 lg:py-32 bg-white relative overflow-hidden">
@@ -74,7 +74,7 @@ export default function ContactSection() {
         </div>
 
         {/* 제작 기간 카드 (헤더 아래 풀폭) */}
-        <div className={`mb-10 lg:mb-16 transition-all duration-1000 delay-200 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
+        <div className={`max-w-4xl mx-auto mb-10 lg:mb-16 transition-all duration-1000 delay-200 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
           <div className="bg-white border border-rose-100 rounded-3xl p-8 lg:p-10 shadow-sm">
             <div className="flex items-center gap-4 mb-8">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-400 to-fuchsia-500 flex items-center justify-center shadow-md shadow-rose-200">
@@ -95,9 +95,9 @@ export default function ContactSection() {
 
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
           {/* Info */}
-          <div className={`space-y-6 transition-all duration-1000 delay-200 ${visible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"}`}>
+          <div className={`flex flex-col transition-all duration-1000 delay-200 ${visible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"}`}>
             {/* 연락처 정보 카드 */}
-            <div className="bg-rose-50 border border-rose-100 rounded-3xl p-8 lg:p-10">
+            <div className="flex-1 lg:min-h-[700px] bg-rose-50 border border-rose-100 rounded-3xl p-8 lg:p-10">
               <h3 className="text-xl font-black text-slate-800 mb-8">연락처 정보</h3>
 
               <div className="space-y-5 mb-8">
@@ -165,9 +165,9 @@ export default function ContactSection() {
           </div>
 
           {/* Form */}
-          <div className={`transition-all duration-1000 delay-300 ${visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"}`}>
+          <div className={`flex flex-col transition-all duration-1000 delay-300 ${visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"}`}>
             {status === "success" ? (
-              <div className="flex flex-col items-center justify-center h-full gap-5 text-center py-20 bg-rose-50 border border-rose-100 rounded-3xl p-8">
+              <div className="flex-1 flex flex-col items-center justify-center gap-5 text-center py-20 bg-rose-50 border border-rose-100 rounded-3xl p-8">
                 <div className="w-16 h-16 rounded-full bg-gradient-to-br from-rose-400 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-rose-200">
                   <CheckCircle size={30} className="text-white" />
                 </div>
@@ -181,8 +181,8 @@ export default function ContactSection() {
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="bg-white border border-rose-100 rounded-3xl p-8 space-y-5 shadow-sm">
-                <div className="grid sm:grid-cols-2 gap-4">
+              <form onSubmit={handleSubmit} className="flex-1 lg:min-h-[700px] bg-white border border-rose-100 rounded-3xl p-8 space-y-5 shadow-sm">
+                <div className="grid sm:grid-cols-1 gap-4">
                   <div>
                     <label className="block text-xs font-semibold text-slate-400 mb-2 tracking-wider uppercase">이름 *</label>
                     <input
@@ -258,7 +258,7 @@ export default function ContactSection() {
                   <label className="block text-xs font-semibold text-slate-400 mb-2 tracking-wider uppercase">문의 내용 *</label>
                   <textarea
                     required
-                    rows={5}
+                    rows={8}
                     value={form.message}
                     onChange={(e) => setForm({ ...form, message: e.target.value })}
                     placeholder="원하시는 피규어 스타일, 참고 이미지, 납기일 등을 알려주세요..."
@@ -275,7 +275,7 @@ export default function ContactSection() {
                 <button
                   type="submit"
                   disabled={status === "loading"}
-                  className="btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="btn-primary w-full py-5 text-base flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   {status === "loading" ? (
                     <><Loader2 size={16} className="animate-spin" /><span>전송 중...</span></>
