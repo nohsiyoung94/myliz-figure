@@ -7,6 +7,7 @@ import GallerySection from "@/components/GallerySection";
 import ReelsSection from "@/components/ReelsSection";
 import SocialSection from "@/components/SocialSection";
 import ContactSection from "@/components/ContactSection";
+import FranchiseSection from "@/components/FranchiseSection";
 import Footer from "@/components/Footer";
 
 export default function Home() {
@@ -21,6 +22,7 @@ export default function Home() {
       <ReelsSection />
       <SocialSection />
       <ContactSection />
+      <FranchiseSection />
       <Footer />
     </main>
   );

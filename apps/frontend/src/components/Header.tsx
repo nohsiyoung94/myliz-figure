@@ -9,6 +9,7 @@ const navLinks = [
   { label: "갤러리", href: "#gallery" },
   { label: "제작 과정", href: "#process" },
   { label: "문의", href: "#contact" },
+  { label: "창업문의", href: "#franchise" },
 ];
 
 export default function Header() {
