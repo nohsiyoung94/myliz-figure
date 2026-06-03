@@ -39,7 +39,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#07070f] flex items-center justify-center p-4">
+    <div className="min-h-screen flex-1 bg-[#07070f] flex items-center justify-center p-4">
       {/* Background glow */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full bg-cyan-500/5 blur-[120px]" />
