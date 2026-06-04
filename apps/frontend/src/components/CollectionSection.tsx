@@ -67,11 +67,11 @@ export default function CollectionSection() {
         {/* Header */}
         <div className={`flex flex-col lg:flex-row lg:items-end justify-between mb-12 gap-6 transition-all duration-1000 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
           <div>
-            <p className="text-rose-500 text-sm font-semibold tracking-[0.3em] uppercase mb-4">Products</p>
+            <p className="text-rose-500 text-sm font-semibold tracking-[0.3em] uppercase mb-4">Featured</p>
             <h2 className="text-4xl lg:text-5xl font-black text-slate-800 leading-tight">
-              제품 라인업
+              마이리즈
               <br />
-              <span className="text-gradient">무엇이든 만들어드립니다</span>
+              <span className="text-gradient">작품 컬렉션</span>
             </h2>
           </div>
 

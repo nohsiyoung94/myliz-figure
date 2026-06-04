@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 import { Menu, X, ShoppingBag, Search } from "lucide-react";
 
 const navLinks = [
-  { label: "피규어", href: "#collection" },
-  { label: "커스텀 굿즈", href: "#collection" },
+  { label: "피규어", href: "#lineup" },
+  { label: "커스텀 굿즈", href: "#lineup" },
   { label: "갤러리", href: "#gallery" },
   { label: "제작 과정", href: "#process" },
   { label: "문의", href: "#contact" },

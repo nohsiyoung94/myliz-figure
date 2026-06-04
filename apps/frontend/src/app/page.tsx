@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import BrandSection from "@/components/BrandSection";
+import ProductLineupSection from "@/components/ProductLineupSection";
 import CollectionSection from "@/components/CollectionSection";
 import CampaignSection from "@/components/CampaignSection";
 import GallerySection from "@/components/GallerySection";
@@ -16,6 +17,7 @@ export default function Home() {
       <Header />
       <HeroSection />
       <BrandSection />
+      <ProductLineupSection />
       <CollectionSection />
       <GallerySection />
       <CampaignSection />
