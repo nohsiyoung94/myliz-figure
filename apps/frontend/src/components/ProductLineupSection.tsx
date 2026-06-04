@@ -17,6 +17,8 @@ interface SubItem {
   desc: string;
   items: string[];
   notice?: string;
+  image?: string;
+  gradient: string;
 }
 
 interface Lineup {
@@ -36,6 +38,7 @@ const lineups: Lineup[] = [
         icon: User,
         title: "3D 전신 피규어",
         desc: "실제 인물의 표정과 분위기를 섬세하게 표현한 고퀄리티 커스텀 피규어 제작",
+        gradient: "from-rose-400 via-pink-400 to-fuchsia-500",
         items: [
           "커플 & 웨딩 피규어",
           "가족 피규어",
@@ -53,6 +56,7 @@ const lineups: Lineup[] = [
         icon: Camera,
         title: "사진으로 만드는 3D 피규어",
         desc: "직접 스캔하러 오실 수 없거나, 깜짝 선물의 경우 사진으로 피규어 제작 가능",
+        gradient: "from-fuchsia-400 via-rose-400 to-orange-300",
         items: [
           "깜짝 선물을 위한 전신, 흉상 피규어",
           "돌아가신 부모님을 추억하며 사진으로 피규어 제작",
@@ -74,6 +78,7 @@ const lineups: Lineup[] = [
         icon: KeyRound,
         title: "아크릴 키링, 스탠드 (등신대)",
         desc: "선명한 인쇄와 감각적인 디자인으로 소장 가치 높은 굿즈 제작",
+        gradient: "from-pink-300 via-rose-300 to-fuchsia-400",
         items: [
           "웨딩 커플 굿즈",
           "캐릭터 굿즈",
@@ -89,6 +94,7 @@ const lineups: Lineup[] = [
         icon: Award,
         title: "메탈 키링, 마그네틱, 뱃지",
         desc: "선명한 인쇄와 감각적인 디자인으로 소장 가치 높은 굿즈 제작",
+        gradient: "from-slate-400 via-rose-300 to-amber-300",
         items: [
           "웨딩 커플 굿즈",
           "캐릭터 굿즈",
@@ -112,6 +118,7 @@ const lineups: Lineup[] = [
         icon: Zap,
         title: "레이저 각인",
         desc: "레이저 각인은 단순한 인쇄가 아닌 오래 남는 특별한 기록입니다. 원하는 문구·로고·사진·그림 등을 활용해 다양한 굿즈를 맞춤 제작합니다.",
+        gradient: "from-amber-300 via-orange-300 to-rose-400",
         items: [
           "반려동물 인식표 (이름 및 전화번호)",
           "QR 코드 각인",
@@ -127,6 +134,7 @@ const lineups: Lineup[] = [
         icon: Smartphone,
         title: "폰케이스",
         desc: "좋아하는 사진과 추억을 담아 세상에 하나뿐인 나만의 폰 케이스 제작",
+        gradient: "from-fuchsia-400 via-purple-300 to-rose-400",
         items: [
           "가족사진",
           "아이 사진",
@@ -214,35 +222,66 @@ export default function ProductLineupSection() {
                   return (
                     <div
                       key={sub.title}
-                      className="group relative bg-white rounded-2xl border border-rose-100 p-6 lg:p-7 hover:shadow-xl hover:shadow-rose-200/40 hover:border-rose-300 transition-all duration-500"
+                      className="group relative bg-white rounded-2xl border border-rose-100 overflow-hidden hover:shadow-xl hover:shadow-rose-200/40 hover:border-rose-300 transition-all duration-500 flex flex-col"
                     >
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-rose-50 text-rose-500 group-hover:bg-gradient-to-br group-hover:from-rose-500 group-hover:to-fuchsia-500 group-hover:text-white transition-all duration-300">
-                          <Icon size={20} strokeWidth={2} />
-                        </div>
-                        <h4 className="text-lg lg:text-xl font-bold text-slate-800">
-                          {sub.title}
-                        </h4>
+                      {/* Hero image / gradient */}
+                      <div
+                        className={`relative aspect-[16/9] overflow-hidden bg-gradient-to-br ${sub.gradient}`}
+                      >
+                        {sub.image ? (
+                          <img
+                            src={sub.image}
+                            alt={sub.title}
+                            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                          />
+                        ) : (
+                          <>
+                            <div className="absolute inset-0 opacity-30 [background-image:radial-gradient(circle_at_20%_30%,white_0,transparent_45%),radial-gradient(circle_at_80%_70%,white_0,transparent_45%)]" />
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <div className="flex flex-col items-center gap-3 text-white">
+                                <div className="flex items-center justify-center w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 shadow-lg group-hover:scale-110 transition-transform duration-500">
+                                  <Icon size={36} strokeWidth={1.8} />
+                                </div>
+                                <span className="text-xs font-semibold tracking-[0.3em] uppercase drop-shadow-sm">
+                                  {sub.title}
+                                </span>
+                              </div>
+                            </div>
+                          </>
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none" />
                       </div>
-                      <p className="text-slate-500 text-sm leading-relaxed mb-5">
-                        {sub.desc}
-                      </p>
-                      <ul className="space-y-2">
-                        {sub.items.map((item) => (
-                          <li
-                            key={item}
-                            className="flex items-start gap-2.5 text-slate-600 text-sm"
-                          >
-                            <span className="mt-2 w-1.5 h-1.5 rounded-full bg-rose-400 shrink-0" />
-                            <span className="leading-relaxed">{item}</span>
-                          </li>
-                        ))}
-                      </ul>
-                      {sub.notice && (
-                        <p className="mt-5 pt-4 border-t border-rose-100 text-rose-500 text-xs leading-relaxed">
-                          ※ {sub.notice}
+
+                      {/* Body */}
+                      <div className="p-6 lg:p-7 flex-1 flex flex-col">
+                        <div className="flex items-center gap-3 mb-4">
+                          <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-rose-50 text-rose-500 group-hover:bg-gradient-to-br group-hover:from-rose-500 group-hover:to-fuchsia-500 group-hover:text-white transition-all duration-300">
+                            <Icon size={20} strokeWidth={2} />
+                          </div>
+                          <h4 className="text-lg lg:text-xl font-bold text-slate-800">
+                            {sub.title}
+                          </h4>
+                        </div>
+                        <p className="text-slate-500 text-sm leading-relaxed mb-5">
+                          {sub.desc}
                         </p>
-                      )}
+                        <ul className="space-y-2">
+                          {sub.items.map((item) => (
+                            <li
+                              key={item}
+                              className="flex items-start gap-2.5 text-slate-600 text-sm"
+                            >
+                              <span className="mt-2 w-1.5 h-1.5 rounded-full bg-rose-400 shrink-0" />
+                              <span className="leading-relaxed">{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                        {sub.notice && (
+                          <p className="mt-5 pt-4 border-t border-rose-100 text-rose-500 text-xs leading-relaxed">
+                            ※ {sub.notice}
+                          </p>
+                        )}
+                      </div>
                     </div>
                   );
                 })}
