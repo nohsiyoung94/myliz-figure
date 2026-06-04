@@ -78,13 +78,12 @@ export default function Footer() {
         <div className="grid lg:grid-cols-5 gap-10 lg:gap-8 mb-12">
           {/* Brand */}
           <div className="lg:col-span-1">
-            <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-rose-400 to-fuchsia-500 flex items-center justify-center shadow-[0_0_12px_rgba(244,63,94,0.3)]">
-                <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" className="w-4 h-4">
-                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-                </svg>
-              </div>
-              <span className="text-xl font-black tracking-[0.15em] text-slate-800">마이리즈</span>
+            <div className="flex items-center mb-4">
+              <img
+                src="/logo/myliz-logo.png"
+                alt="MY LIZ"
+                className="h-14 w-auto"
+              />
             </div>
             <p className="text-slate-400 text-sm leading-relaxed mb-5">
               3D 스캔부터 수작업 도색까지, 세상에 하나뿐인 커스텀 피규어 전문 브랜드

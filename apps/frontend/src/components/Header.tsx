@@ -41,16 +41,14 @@ export default function Header() {
             {/* Logo */}
             <button
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              className="flex items-center gap-2.5 group"
+              className="flex items-center group"
+              aria-label="MY LIZ"
             >
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-rose-400 to-fuchsia-500 flex items-center justify-center shadow-[0_0_12px_rgba(244,63,94,0.4)]">
-                <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" className="w-4 h-4">
-                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-                </svg>
-              </div>
-              <span className="text-xl font-black tracking-[0.15em] text-slate-800 group-hover:text-gradient transition-all duration-300">
-                마이리즈
-              </span>
+              <img
+                src="/logo/myliz-logo.png"
+                alt="MY LIZ"
+                className="h-12 lg:h-14 w-auto transition-opacity duration-300 group-hover:opacity-80"
+              />
             </button>
 
             {/* Desktop Nav */}
